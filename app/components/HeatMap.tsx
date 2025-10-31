@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import DetailModal from './DetailModal';
 import { ComparisonMode } from './ComparisonSelector';
-import { getComparisonDataPoint, calculatePercentageChange } from '../utils/comparisonUtils';
+import { getComparisonDataPoint, calculatePercentageChange, calculatePointChange } from '../utils/comparisonUtils';
 import theme from '@/lib/theme';
 
 interface HeatMapProps {
@@ -34,14 +34,15 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
 
   const spreads = allSpreads;
 
-  const getChangePercentage = (spread: string) => {
+  const getChangeValue = (spread: string) => {
     const current = parseFloat(latestData[spread]) || 0;
     const { compareIndex } = getComparisonDataPoint(data, 0, comparisonMode);
 
     if (compareIndex === -1 || !data[compareIndex]) return 0;
 
     const previous = parseFloat(data[compareIndex][spread]) || 0;
-    return calculatePercentageChange(current, previous);
+    // Spreads use point change instead of percentage (more meaningful)
+    return calculatePointChange(current, previous);
   };
 
   const getHeatColor = (change: number) => {
@@ -62,7 +63,7 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
       </h3>
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
         {spreads.map((spread, index) => {
-          const change = getChangePercentage(spread);
+          const change = getChangeValue(spread);
           const value = parseFloat(latestData[spread]) || 0;
 
           return (
@@ -99,7 +100,7 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
                       color: change > 0 ? theme.colors.data.profitLight : change < 0 ? theme.colors.data.lossLight : theme.colors.data.neutral
                     }}
                   >
-                    {change > 0 ? '+' : ''}{change.toFixed(2)}%
+                    {change > 0 ? '+' : ''}{change.toFixed(2)} pts
                   </span>
                 </div>
               </div>

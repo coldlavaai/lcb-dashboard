@@ -78,12 +78,46 @@ function findClosestDateMatch(
   };
 }
 
+/**
+ * Calculate percentage change between two values.
+ * For values that cross zero or are negative, percentage change is misleading.
+ * This function returns percentage for positive values, but uses a modified approach for negative values.
+ */
 export function calculatePercentageChange(
   current: number,
   previous: number
 ): number {
-  if (previous === 0 || isNaN(previous) || isNaN(current)) return 0;
+  if (isNaN(previous) || isNaN(current)) return 0;
+  if (previous === 0) return current === 0 ? 0 : (current > 0 ? 100 : -100);
+
+  // For values that have different signs or are both negative, percentage is misleading
+  // Use percentage of absolute values instead
+  if ((current < 0 && previous < 0) || (current * previous < 0)) {
+    // Both negative or crossing zero - use absolute difference as "percentage"
+    // This gives more meaningful results for spreads
+    const absCurrent = Math.abs(current);
+    const absPrevious = Math.abs(previous);
+    const change = ((absCurrent - absPrevious) / absPrevious) * 100;
+    // If current is more negative than previous, make it negative change
+    if (current < previous) {
+      return -Math.abs(change);
+    }
+    return change;
+  }
+
+  // Standard percentage calculation for positive values
   return ((current - previous) / previous) * 100;
+}
+
+/**
+ * Calculate absolute point change (better for spreads)
+ */
+export function calculatePointChange(
+  current: number,
+  previous: number
+): number {
+  if (isNaN(previous) || isNaN(current)) return 0;
+  return current - previous;
 }
 
 export function formatComparisonLabel(

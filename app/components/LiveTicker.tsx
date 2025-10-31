@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, AlertCircle, Activity } from 'lucide-react';
 import DetailModal from './DetailModal';
 import { ComparisonMode } from './ComparisonSelector';
-import { getComparisonDataPoint, calculatePercentageChange } from '../utils/comparisonUtils';
+import { getComparisonDataPoint, calculatePercentageChange, calculatePointChange } from '../utils/comparisonUtils';
 
 interface TickerItem {
   id: string;
@@ -14,6 +14,7 @@ interface TickerItem {
   trend?: 'up' | 'down' | 'neutral';
   alert?: boolean;
   dataKey: string;
+  isSpread?: boolean; // Indicates if this is a spread (should use points not %)
 }
 
 interface LiveTickerProps {
@@ -45,15 +46,16 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
     if (latest['CZCE - ICE'] != null) {
       const current = parseFloat(latest['CZCE - ICE']);
       const prev = parseFloat(previous['CZCE - ICE']);
-      const change = calculatePercentageChange(current, prev);
+      const change = calculatePointChange(current, prev); // Use point change for spreads
       items.push({
         id: 'czce-ice',
         label: 'CZCE-ICE',
         value: current.toFixed(2) + '¢',
         change: change,
         trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
-        alert: Math.abs(change) > 5,
-        dataKey: 'CZCE - ICE'
+        alert: Math.abs(change) > 2, // Alert if >2 point move
+        dataKey: 'CZCE - ICE',
+        isSpread: true
       });
     }
 
@@ -61,14 +63,15 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
     if (latest['AWP - ICE'] != null) {
       const current = parseFloat(latest['AWP - ICE']);
       const prev = parseFloat(previous['AWP - ICE']);
-      const change = calculatePercentageChange(current, prev);
+      const change = calculatePointChange(current, prev); // Use point change for spreads
       items.push({
         id: 'awp-ice',
         label: 'AWP-ICE',
         value: current.toFixed(2) + '¢',
         change: change,
         trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
-        dataKey: 'AWP - ICE'
+        dataKey: 'AWP - ICE',
+        isSpread: true
       });
     }
 
@@ -76,14 +79,15 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
     if (hasMCXData && latest['MCX - ICE'] != null) {
       const current = parseFloat(latest['MCX - ICE']);
       const prev = parseFloat(previous['MCX - ICE']);
-      const change = calculatePercentageChange(current, prev);
+      const change = calculatePointChange(current, prev); // Use point change for spreads
       items.push({
         id: 'mcx-ice',
         label: 'MCX-ICE',
         value: current.toFixed(2) + '¢',
         change: change,
         trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
-        dataKey: 'MCX - ICE'
+        dataKey: 'MCX - ICE',
+        isSpread: true
       });
     }
 
@@ -130,14 +134,15 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
     if (latest['CZCE Cotton - PSF'] != null) {
       const current = parseFloat(latest['CZCE Cotton - PSF']);
       const prev = parseFloat(previous['CZCE Cotton - PSF']);
-      const change = calculatePercentageChange(current, prev);
+      const change = calculatePointChange(current, prev); // Use point change for spreads
       items.push({
         id: 'cotton-psf',
         label: 'Cotton-PSF',
         value: current.toFixed(2),
         change: change,
         trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
-        dataKey: 'CZCE Cotton - PSF'
+        dataKey: 'CZCE Cotton - PSF',
+        isSpread: true
       });
     }
 
@@ -216,7 +221,7 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
                     {item.trend === 'up' && <TrendingUp size={12} />}
                     {item.trend === 'down' && <TrendingDown size={12} />}
                     <span className="text-xs font-semibold">
-                      {item.change > 0 ? '+' : ''}{item.change.toFixed(2)}%
+                      {item.change > 0 ? '+' : ''}{item.change.toFixed(2)}{item.isSpread ? ' pts' : '%'}
                     </span>
                   </div>
                 )}

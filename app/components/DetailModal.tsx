@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, TrendingUp, TrendingDown, BarChart3, Info, Calendar, Activity } from 'lucide-react';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { ComparisonMode } from './ComparisonSelector';
-import { getComparisonDataPoint, calculatePercentageChange, formatComparisonLabel } from '../utils/comparisonUtils';
+import { getComparisonDataPoint, calculatePercentageChange, calculatePointChange, formatComparisonLabel } from '../utils/comparisonUtils';
 
 interface DetailModalProps {
   isOpen: boolean;
@@ -58,7 +58,15 @@ export default function DetailModal({
     ? parseFloat(data[compareIndex][dataKey]) || 0
     : 0;
 
-  const change = calculatePercentageChange(latestValue, previousValue);
+  // Detect if this is a spread (contains hyphen or specific keywords)
+  const isSpread = dataKey.includes('-') || dataKey.toLowerCase().includes('spread') ||
+                   dataKey.toLowerCase().includes('basis');
+
+  const percentChange = calculatePercentageChange(latestValue, previousValue);
+  const pointChange = calculatePointChange(latestValue, previousValue);
+
+  // Use point change for spreads, percentage for absolute prices
+  const change = isSpread ? pointChange : percentChange;
   const isPositive = change > 0;
 
   // Get actual dates for comparison label
@@ -146,7 +154,7 @@ export default function DetailModal({
                       isPositive ? 'text-green-400' : 'text-red-400'
                     }`}>
                       {isPositive ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
-                      {isPositive ? '+' : ''}{stats.change}%
+                      {isPositive ? '+' : ''}{stats.change}{isSpread ? ' pts' : '%'}
                     </p>
                   </div>
                   <div className="bg-[#0F1419]/50 rounded-xl p-4 border border-white/10">
