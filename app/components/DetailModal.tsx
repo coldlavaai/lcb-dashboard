@@ -220,7 +220,12 @@ export default function DetailModal({
                           return `${date.getMonth()+1}/${date.getDate()}`;
                         }}
                       />
-                      <YAxis stroke="#fff" tick={{ fill: '#fff', fontSize: 12 }} />
+                      <YAxis
+                        stroke="#fff"
+                        tick={{ fill: '#fff', fontSize: 12 }}
+                        domain={['dataMin - 5', 'dataMax + 5']}
+                        padding={{ top: 20, bottom: 20 }}
+                      />
                       <Tooltip
                         contentStyle={{
                           backgroundColor: '#1A2332',

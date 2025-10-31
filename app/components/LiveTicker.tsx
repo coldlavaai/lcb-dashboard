@@ -219,7 +219,7 @@ export default function LiveTicker({ data, comparisonMode = 'latest', onComparis
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="absolute top-full left-0 mt-1 bg-[#1A2332] border border-white/20 rounded-lg shadow-xl z-50 min-w-[150px]"
+                    className="absolute top-full left-0 mt-1 bg-[#1A2332] border border-white/20 rounded-lg shadow-xl z-[9999] min-w-[150px]"
                   >
                     {[
                       { value: 'latest' as ComparisonMode, label: 'vs Previous Day' },

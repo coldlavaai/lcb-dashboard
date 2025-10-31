@@ -61,7 +61,7 @@ export default function SectionComparisonSelector({
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-[60]"
+            className="fixed inset-0 z-[9998]"
             onClick={() => setIsOpen(false)}
           />
 
@@ -69,7 +69,7 @@ export default function SectionComparisonSelector({
           <motion.div
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="absolute top-full right-0 mt-2 w-56 bg-[#1A2332] backdrop-blur-xl border border-[#D4AF37]/30 rounded-lg shadow-2xl overflow-hidden z-[70]"
+            className="absolute top-full right-0 mt-2 w-56 bg-[#1A2332] backdrop-blur-xl border border-[#D4AF37]/30 rounded-lg shadow-2xl overflow-hidden z-[9999]"
           >
             <div className="p-2">
               {/* Use Global Option */}
