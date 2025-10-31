@@ -20,6 +20,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://lcb-dashboard.vercel.app'),
   title: "LCB Dashboard - Liverpool Cotton Brokers Market Intelligence",
   description: "Professional cotton market data visualization and analysis platform. Track ICE, CZCE, MCX, AWP, and global cotton price spreads with advanced analytics.",
   keywords: ["cotton", "commodities", "trading", "market data", "Liverpool Cotton Brokers", "ICE futures", "CZCE", "MCX"],
@@ -29,6 +30,28 @@ export const metadata: Metadata = {
       { url: '/favicon.png', sizes: '32x32', type: 'image/png' }
     ],
     apple: { url: '/icon.png', sizes: '192x192', type: 'image/png' },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://lcb-dashboard.vercel.app',
+    siteName: 'LCB Dashboard',
+    title: 'LCB Dashboard - Liverpool Cotton Brokers Market Intelligence',
+    description: 'Professional cotton market data visualization and analysis platform. Track ICE, CZCE, MCX, AWP, and global cotton price spreads with advanced analytics.',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'LCB Dashboard - Liverpool Cotton Brokers',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'LCB Dashboard - Liverpool Cotton Brokers Market Intelligence',
+    description: 'Professional cotton market data visualization and analysis platform with 20 years of historical data.',
+    images: ['/opengraph-image'],
   },
 };
 
