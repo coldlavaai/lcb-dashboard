@@ -19,7 +19,6 @@ import CustomDatePicker from '../components/CustomDatePicker';
 import ComparisonSelector, { ComparisonMode } from '../components/ComparisonSelector';
 import SettingsModal from '../components/SettingsModal';
 import DraggableSection from '../components/DraggableSection';
-import CommentSection from '../components/CommentSection';
 import VolatilityDashboard from '../components/VolatilityDashboard';
 import RawMaterialsGrid from '../components/RawMaterialsGrid';
 

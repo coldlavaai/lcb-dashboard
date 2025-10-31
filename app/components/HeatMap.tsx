@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import DetailModal from './DetailModal';
-import CommentSection from './CommentSection';
 import { ComparisonMode } from './ComparisonSelector';
 import { getComparisonDataPoint, calculatePercentageChange, calculatePointChange } from '../utils/comparisonUtils';
 import theme from '@/lib/theme';
@@ -82,19 +81,13 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
               }}
             >
               <div className="relative z-10 flex flex-col h-full justify-between">
-                <div className="flex items-start justify-between gap-2 mb-4">
+                <div className="mb-4">
                   <p
                     onClick={() => setSelectedSpread(spread)}
-                    className="text-white/95 text-base font-bold line-clamp-2 leading-snug tracking-wide cursor-pointer flex-1"
+                    className="text-white/95 text-base font-bold line-clamp-2 leading-snug tracking-wide cursor-pointer"
                   >
                     {spread}
                   </p>
-                  <div onClick={(e) => e.stopPropagation()}>
-                    <CommentSection
-                      sectionId={`spread-${spread.replace(/\s+/g, '-').toLowerCase()}`}
-                      sectionTitle={spread}
-                    />
-                  </div>
                 </div>
                 <div>
                   <p className="text-white text-4xl font-black mb-3 font-tabular tracking-tight">

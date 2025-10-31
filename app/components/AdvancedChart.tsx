@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
 import { TrendingUp, Layers, BarChart3, Calendar } from 'lucide-react';
-import CommentSection from './CommentSection';
 
 interface AdvancedChartProps {
   data: any[];
@@ -58,8 +57,7 @@ export default function AdvancedChart({ data, spread, title, description, color 
       </div>
 
       {/* Chart Controls */}
-      <div className="flex items-center justify-between gap-2 mb-4 flex-wrap relative z-10">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 mb-4 flex-wrap relative z-10">
         <div className="flex bg-[#0F1419] rounded-lg p-1">
           <button
             onClick={() => setChartType('area')}
@@ -88,13 +86,6 @@ export default function AdvancedChart({ data, spread, title, description, color 
           <Layers size={12} />
           MA(20)
         </button>
-        </div>
-
-        {/* Comment Section */}
-        <CommentSection
-          sectionId={`chart-${spread.replace(/\s+/g, '-').toLowerCase()}`}
-          sectionTitle={title}
-        />
       </div>
 
       {/* Chart */}

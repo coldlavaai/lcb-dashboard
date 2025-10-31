@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Activity, Zap, Info } from 'lucide-react';
 import theme from '@/lib/theme';
-import CommentSection from './CommentSection';
 
 interface VolatilityDashboardProps {
   data: any[];
@@ -105,10 +104,6 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
                     <Icon size={20} style={{ color: metric.color }} />
                     <span className="text-white/60 text-xs font-medium">{metric.label}</span>
                   </div>
-                  <CommentSection
-                    sectionId={`volatility-${metric.id}`}
-                    sectionTitle={metric.label}
-                  />
                 </div>
                 <div className="text-white text-3xl font-black font-tabular">
                   {metric.value.toFixed(2)}¢
@@ -134,19 +129,13 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
               borderColor: weekMove >= 0 ? `${theme.colors.data.profit}60` : `${theme.colors.data.loss}60`,
             }}
           >
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <div className="flex items-center gap-3">
-                {weekMove >= 0 ? (
-                  <TrendingUp size={24} style={{ color: theme.colors.data.profit }} />
-                ) : (
-                  <TrendingDown size={24} style={{ color: theme.colors.data.loss }} />
-                )}
-                <h4 className="text-white font-bold text-lg">Weekly Movement</h4>
-              </div>
-              <CommentSection
-                sectionId="volatility-week-move"
-                sectionTitle="Weekly Movement"
-              />
+            <div className="flex items-center gap-3 mb-4">
+              {weekMove >= 0 ? (
+                <TrendingUp size={24} style={{ color: theme.colors.data.profit }} />
+              ) : (
+                <TrendingDown size={24} style={{ color: theme.colors.data.loss }} />
+              )}
+              <h4 className="text-white font-bold text-lg">Weekly Movement</h4>
             </div>
             <div className="flex items-baseline gap-2">
               <span
@@ -167,15 +156,11 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
             className="relative overflow-hidden rounded-xl p-8 backdrop-blur-md border-2 border-[#2C7A7B]/60"
             style={{ backgroundColor: 'rgba(44, 122, 123, 0.1)' }}
           >
-            <div className="flex items-center justify-between mb-2">
+            <div className="mb-2">
               <h4 className="text-white font-bold text-lg flex items-center gap-2">
                 <Activity size={20} className="text-[#2C7A7B]" />
                 Daily High/Low
               </h4>
-              <CommentSection
-                sectionId="volatility-hi-lo"
-                sectionTitle="Daily High/Low"
-              />
             </div>
             <p className="text-white/50 text-xs mb-4">Today's intraday price extremes from Hi, Lo, and Spread fields</p>
             <div className="space-y-4">
