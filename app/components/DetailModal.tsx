@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, TrendingUp, TrendingDown, BarChart3, Info, Calendar, Activity } from 'lucide-react';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -29,6 +30,12 @@ export default function DetailModal({
   comparisonMode = 'latest',
 }: DetailModalProps) {
   const [chartType, setChartType] = useState<'area' | 'line'>('area');
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure we're mounted (client-side only)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close on escape key
   useEffect(() => {
@@ -94,7 +101,10 @@ export default function DetailModal({
 
   const ChartComponent = chartType === 'area' ? AreaChart : LineChart;
 
-  return (
+  // Don't render on server or if not mounted
+  if (!mounted) return null;
+
+  const modalContent = (
     <AnimatePresence>
       {isOpen && (
         <>
@@ -321,4 +331,7 @@ export default function DetailModal({
       )}
     </AnimatePresence>
   );
+
+  // Render modal in a portal at document.body level to escape all container constraints
+  return createPortal(modalContent, document.body);
 }
