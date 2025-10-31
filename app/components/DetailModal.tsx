@@ -48,8 +48,11 @@ export default function DetailModal({
 
   const latestValue = values[0] || 0;
   const previousValue = values[1] || 0;
-  const change = previousValue ? (((latestValue - previousValue) / Math.abs(previousValue)) * 100) : 0;
+  const change = previousValue !== 0 ? (((latestValue - previousValue) / previousValue) * 100) : 0;
   const isPositive = change > 0;
+
+  // Calculate stats
+  const sortedValues = [...values].sort((a, b) => a - b);
 
   const stats = {
     current: latestValue.toFixed(2),
@@ -58,11 +61,10 @@ export default function DetailModal({
     low: Math.min(...values.filter(v => v !== 0)).toFixed(2),
     avg: (values.reduce((sum, v) => sum + v, 0) / values.length).toFixed(2),
     volatility: (Math.max(...values) - Math.min(...values.filter(v => v !== 0))).toFixed(2),
-    median: values.sort((a, b) => a - b)[Math.floor(values.length / 2)]?.toFixed(2) || '0.00',
+    median: sortedValues[Math.floor(sortedValues.length / 2)]?.toFixed(2) || '0.00',
   };
 
   // Percentile calculation
-  const sortedValues = [...values].sort((a, b) => a - b);
   const percentile = ((sortedValues.indexOf(latestValue) / sortedValues.length) * 100).toFixed(0);
 
   const ChartComponent = chartType === 'area' ? AreaChart : LineChart;

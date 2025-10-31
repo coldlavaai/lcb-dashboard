@@ -35,7 +35,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
     if (latest['CZCE - ICE'] != null) {
       const current = parseFloat(latest['CZCE - ICE']);
       const prev = parseFloat(previous['CZCE - ICE']);
-      const change = prev ? ((current - prev) / Math.abs(prev)) * 100 : 0;
+      const change = prev !== 0 ? ((current - prev) / prev) * 100 : 0;
       items.push({
         id: 'czce-ice',
         label: 'CZCE-ICE',
@@ -51,7 +51,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
     if (latest['AWP - ICE'] != null) {
       const current = parseFloat(latest['AWP - ICE']);
       const prev = parseFloat(previous['AWP - ICE']);
-      const change = prev ? ((current - prev) / Math.abs(prev)) * 100 : 0;
+      const change = prev !== 0 ? ((current - prev) / prev) * 100 : 0;
       items.push({
         id: 'awp-ice',
         label: 'AWP-ICE',
@@ -66,7 +66,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
     if (latest['MCX - ICE'] != null) {
       const current = parseFloat(latest['MCX - ICE']);
       const prev = parseFloat(previous['MCX - ICE']);
-      const change = prev ? ((current - prev) / Math.abs(prev)) * 100 : 0;
+      const change = prev !== 0 ? ((current - prev) / prev) * 100 : 0;
       items.push({
         id: 'mcx-ice',
         label: 'MCX-ICE',
@@ -120,7 +120,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
     if (latest['CZCE Cotton - PSF'] != null) {
       const current = parseFloat(latest['CZCE Cotton - PSF']);
       const prev = parseFloat(previous['CZCE Cotton - PSF']);
-      const change = prev ? ((current - prev) / Math.abs(prev)) * 100 : 0;
+      const change = prev !== 0 ? ((current - prev) / prev) * 100 : 0;
       items.push({
         id: 'cotton-psf',
         label: 'Cotton-PSF',

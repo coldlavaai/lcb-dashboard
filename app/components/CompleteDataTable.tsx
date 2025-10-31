@@ -272,7 +272,7 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
                       if (prevValue != null && !isNaN(parseFloat(prevValue))) {
                         const prevNum = parseFloat(prevValue);
                         if (prevNum !== 0) {
-                          change = ((numValue - prevNum) / Math.abs(prevNum)) * 100;
+                          change = ((numValue - prevNum) / prevNum) * 100;
 
                           if (col.key.includes('Spread') || col.key.includes('-')) {
                             textColor = change > 0 ? 'text-green-400' : change < 0 ? 'text-red-400' : 'text-white';
