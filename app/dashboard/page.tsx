@@ -33,9 +33,17 @@ export default function Dashboard() {
   const [useCustomRange, setUseCustomRange] = useState(false);
 
   const getFilteredData = () => {
+    // Filter out October 30th (has null values)
+    const excludeOct30 = (item: any) => {
+      const itemDate = new Date(item.Date);
+      return !(itemDate.getMonth() === 9 && itemDate.getDate() === 30 && itemDate.getFullYear() === 2024);
+    };
+
+    const filteredCottonData = cottonData.filter(excludeOct30);
+
     // Use custom date range if set
     if (useCustomRange && customDateRange.start && customDateRange.end) {
-      return cottonData.filter((item) => {
+      return filteredCottonData.filter((item) => {
         const itemDate = new Date(item.Date);
         return itemDate >= customDateRange.start! && itemDate <= customDateRange.end!;
       });
@@ -47,9 +55,9 @@ export default function Dashboard() {
       '30d': 30,
       '90d': 90,
       '1y': 365,
-      'all': cottonData.length
+      'all': filteredCottonData.length
     }[timeRange];
-    return cottonData.slice(0, days);
+    return filteredCottonData.slice(0, days);
   };
 
   const handleCustomDateRange = (startDate: Date, endDate: Date) => {
@@ -60,6 +68,12 @@ export default function Dashboard() {
   };
 
   const filteredData = getFilteredData();
+
+  // Also filter the full dataset to exclude October 30th
+  const filteredFullData = cottonDataFull.filter((item: any) => {
+    const itemDate = new Date(item.Column_0 || item.Date);
+    return !(itemDate.getMonth() === 9 && itemDate.getDate() === 30 && itemDate.getFullYear() === 2024);
+  });
 
   const spreads = [
     { id: 'CZCE - ICE', name: 'CZCE-ICE', description: 'China vs US Cotton Futures', color: '#D4AF37' },
@@ -325,7 +339,7 @@ export default function Dashboard() {
             animate={{ opacity: 1 }}
             className="space-y-8"
           >
-            <CompleteDataTable data={cottonDataFull as any[]} />
+            <CompleteDataTable data={filteredFullData as any[]} />
             <CorrelationMatrix data={filteredData} />
           </motion.div>
         )}
