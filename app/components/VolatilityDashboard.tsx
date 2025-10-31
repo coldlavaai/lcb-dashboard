@@ -66,19 +66,17 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
 
   return (
     <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none overflow-hidden group">
-      {/* Comment Button - Top Right */}
-      <div className="absolute top-4 right-4 z-20">
+      <div className="flex items-center justify-between mb-2 relative z-10">
+        <h3 className="text-2xl font-bold text-[#D4AF37] flex items-center gap-3">
+          <Zap size={24} className="text-[#D4AF37]" />
+          <span className="h-1 w-12 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
+          {title}
+        </h3>
         <CommentSection
           sectionId="volatility-dashboard"
           sectionTitle={title}
         />
       </div>
-
-      <h3 className="text-2xl font-bold text-[#D4AF37] mb-2 relative z-10 flex items-center gap-3">
-        <Zap size={24} className="text-[#D4AF37]" />
-        <span className="h-1 w-12 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
-        {title}
-      </h3>
 
       {/* Volatility Explanation */}
       <div className="mb-6 relative z-10 bg-white/5 rounded-lg p-4 border border-[#D4AF37]/20">

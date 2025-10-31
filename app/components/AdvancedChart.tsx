@@ -40,14 +40,6 @@ export default function AdvancedChart({ data, spread, title, description, color 
 
   return (
     <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none">
-      {/* Comment Button - Top Right */}
-      <div className="absolute top-4 right-4 z-20">
-        <CommentSection
-          sectionId={`chart-${spread.replace(/\s+/g, '-').toLowerCase()}`}
-          sectionTitle={title}
-        />
-      </div>
-
       {/* Chart Header */}
       <div className="flex items-center justify-between mb-4 relative z-10">
         <div>
@@ -57,7 +49,7 @@ export default function AdvancedChart({ data, spread, title, description, color 
           </h3>
           <p className="text-white/60 text-sm mt-1">{description}</p>
         </div>
-        <div className="text-right mr-12">
+        <div className="text-right">
           <p className="text-3xl font-bold text-white">{latestValue}</p>
           <p className={`text-sm font-semibold ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
             {isPositive ? '+' : ''}{change}%
@@ -66,7 +58,8 @@ export default function AdvancedChart({ data, spread, title, description, color 
       </div>
 
       {/* Chart Controls */}
-      <div className="flex items-center gap-2 mb-4 flex-wrap relative z-10">
+      <div className="flex items-center justify-between gap-2 mb-4 flex-wrap relative z-10">
+        <div className="flex items-center gap-2">
         <div className="flex bg-[#0F1419] rounded-lg p-1">
           <button
             onClick={() => setChartType('area')}
@@ -95,6 +88,13 @@ export default function AdvancedChart({ data, spread, title, description, color 
           <Layers size={12} />
           MA(20)
         </button>
+        </div>
+
+        {/* Comment Section */}
+        <CommentSection
+          sectionId={`chart-${spread.replace(/\s+/g, '-').toLowerCase()}`}
+          sectionTitle={title}
+        />
       </div>
 
       {/* Chart */}
