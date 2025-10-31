@@ -32,6 +32,17 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#1A2332' },
+    { media: '(prefers-color-scheme: light)', color: '#F8F9FA' }
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

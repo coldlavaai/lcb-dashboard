@@ -187,3 +187,63 @@ html {
 .compact-mode .stat-card {
   padding: 1rem;
 }
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  /* Reduce chart heights on mobile */
+  .recharts-responsive-container {
+    max-height: 250px !important;
+  }
+
+  /* Better touch targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Reduce padding on mobile */
+  .mobile-reduce-padding {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Make modals full-screen on mobile */
+  [class*="fixed"][class*="inset"] {
+    inset: 0 !important;
+    border-radius: 0 !important;
+    max-width: 100% !important;
+    max-height: 100vh !important;
+  }
+
+  /* Improve table scrolling */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+
+  /* Better font sizes on mobile */
+  h1 {
+    font-size: 1.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.25rem !important;
+  }
+
+  h3 {
+    font-size: 1.125rem !important;
+  }
+
+  /* Tighter spacing on mobile */
+  .gap-8 {
+    gap: 1rem !important;
+  }
+
+  .gap-10 {
+    gap: 1.5rem !important;
+  }
+
+  .gap-12 {
+    gap: 2rem !important;
+  }
+}
