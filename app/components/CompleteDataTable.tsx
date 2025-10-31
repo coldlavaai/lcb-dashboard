@@ -12,7 +12,7 @@ type TabCategory = 'prices' | 'spreads' | 'structure' | 'volatility' | 'currency
 
 export default function CompleteDataTable({ data }: CompleteDataTableProps) {
   const [activeTab, setActiveTab] = useState<TabCategory>('prices');
-  const [sortKey, setSortKey] = useState<string>('Column_0');
+  const [sortKey, setSortKey] = useState<string>('Date');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [rowsToShow, setRowsToShow] = useState(100);
   const [showDateRange, setShowDateRange] = useState(false);
@@ -25,7 +25,7 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
       label: 'Prices',
       icon: '💵',
       columns: [
-        { key: 'Column_0', label: 'Date' },
+        { key: 'Date', label: 'Date' },
         { key: 'ICE', label: 'ICE Cotton No. 2 (¢/lb)' },
         { key: 'CZCE cotton usc/lb', label: 'CZCE Cotton (¢/lb)' },
         { key: 'MCX usc/lb', label: 'MCX Cotton (¢/lb)' },
@@ -116,7 +116,7 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
     // Apply date range filter if enabled
     if (showDateRange && (startDate || endDate)) {
       filtered = filtered.filter(row => {
-        const rowDate = new Date(row['Column_0']);
+        const rowDate = new Date(row['Date']);
         const start = startDate ? new Date(startDate) : null;
         const end = endDate ? new Date(endDate) : null;
 
@@ -171,7 +171,7 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
     const rows = sortedData.map(row =>
       category.columns.map(col => {
         const value = row[col.key];
-        if (col.key === 'Column_0') {
+        if (col.key === 'Date') {
           return new Date(value).toLocaleDateString('en-US');
         }
         return value != null ? value : 'N/A';
@@ -261,7 +261,7 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
                   Clear
                 </button>
                 <div className="text-white/50 text-sm">
-                  <span className="font-semibold">Available:</span> {data.length > 0 ? new Date(data[data.length - 1]['Column_0']).getFullYear() : '?'} - {data.length > 0 ? new Date(data[0]['Column_0']).getFullYear() : '?'}
+                  <span className="font-semibold">Available:</span> {data.length > 0 ? new Date(data[data.length - 1]['Date']).getFullYear() : '?'} - {data.length > 0 ? new Date(data[0]['Date']).getFullYear() : '?'}
                 </div>
               </div>
             </motion.div>
@@ -338,7 +338,7 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
                   {currentCategory.columns.map((col) => {
                     const value = row[col.key];
                     const prevValue = prevRow ? prevRow[col.key] : null;
-                    const isDate = col.key === 'Column_0';
+                    const isDate = col.key === 'Date';
 
                     let displayValue: string;
                     let change: number | null = null;

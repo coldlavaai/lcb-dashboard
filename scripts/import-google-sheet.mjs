@@ -134,9 +134,21 @@ async function importGoogleSheet() {
         obj[header] = value;
       }
 
-      // Only add rows that have a date
+      // Only add rows that have a date and valid data
+      // Skip October 30th, 2025 and rows with mostly null values
       if (obj.Date && obj.Date !== null) {
-        data.push(obj);
+        // Skip October 30th, 2025
+        if (obj.Date === '2025-10-30') {
+          console.log(`⏭️  Skipping ${obj.Date} (no data)`);
+          continue;
+        }
+
+        // Check if row has meaningful data (at least ICE or CZCE price)
+        if (obj.ICE !== null || obj['CZCE cotton'] !== null || obj['CZCE cotton usc/lb'] !== null) {
+          data.push(obj);
+        } else {
+          console.log(`⏭️  Skipping ${obj.Date} (insufficient data)`);
+        }
       }
     }
 
