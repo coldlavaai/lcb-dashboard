@@ -38,9 +38,9 @@ export default function AdvancedChart({ data, spread, title, description, color 
   const ChartComponent = chartType === 'area' ? AreaChart : LineChart;
 
   return (
-    <div className="bg-gradient-to-br from-[#1A2332]/90 via-[#1A2332]/80 to-[#2C3E50]/90 backdrop-blur-xl border border-[#D4AF37]/30 rounded-xl p-6 shadow-2xl">
+    <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none">
       {/* Chart Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 relative z-10">
         <div>
           <h3 className="text-2xl font-bold text-[#D4AF37] flex items-center gap-2">
             <TrendingUp size={24} />
@@ -57,7 +57,7 @@ export default function AdvancedChart({ data, spread, title, description, color 
       </div>
 
       {/* Chart Controls */}
-      <div className="flex items-center gap-2 mb-4 flex-wrap">
+      <div className="flex items-center gap-2 mb-4 flex-wrap relative z-10">
         <div className="flex bg-[#0F1419] rounded-lg p-1">
           <button
             onClick={() => setChartType('area')}
@@ -89,6 +89,7 @@ export default function AdvancedChart({ data, spread, title, description, color 
       </div>
 
       {/* Chart */}
+      <div className="relative z-10">
       <ResponsiveContainer width="100%" height={350}>
         <ChartComponent data={dataWithMA}>
           <defs>
@@ -146,9 +147,10 @@ export default function AdvancedChart({ data, spread, title, description, color 
           )}
         </ChartComponent>
       </ResponsiveContainer>
+      </div>
 
       {/* Stats Footer */}
-      <div className="grid grid-cols-4 gap-4 mt-4 pt-4 border-t border-white/10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6 pt-6 border-t border-white/10 relative z-10">
         {[
           { label: '52W High', value: Math.max(...data.slice(0, 260).map(d => parseFloat(d[spread]) || 0)).toFixed(2) },
           { label: '52W Low', value: Math.min(...data.slice(0, 260).filter(d => d[spread] != null).map(d => parseFloat(d[spread]))).toFixed(2) },

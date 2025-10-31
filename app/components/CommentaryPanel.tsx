@@ -78,10 +78,10 @@ export default function CommentaryPanel({ spread }: CommentaryPanelProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-br from-[#1A2332]/90 via-[#1A2332]/80 to-[#2C3E50]/90 backdrop-blur-xl border border-[#D4AF37]/30 rounded-xl p-6 shadow-2xl"
+      className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none"
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 relative z-10">
         <div className="flex items-center gap-2">
           <MessageSquare size={20} className="text-[#D4AF37]" />
           <h3 className="text-lg font-bold text-[#D4AF37]">Expert Analysis</h3>
@@ -95,12 +95,12 @@ export default function CommentaryPanel({ spread }: CommentaryPanelProps) {
       </div>
 
       {/* Analysis */}
-      <div className="mb-4">
+      <div className="mb-4 relative z-10">
         <p className="text-white/90 leading-relaxed text-sm">{commentary.analysis}</p>
       </div>
 
       {/* Key Points */}
-      <div className="mb-4">
+      <div className="mb-4 relative z-10">
         <h4 className="text-[#D4AF37] text-sm font-semibold mb-2">Key Points</h4>
         <ul className="space-y-2">
           {commentary.keyPoints.map((point, index) => (
@@ -119,13 +119,13 @@ export default function CommentaryPanel({ spread }: CommentaryPanelProps) {
       </div>
 
       {/* Outlook */}
-      <div className="p-4 bg-[#0F1419]/50 rounded-lg border-l-4 border-[#2C7A7B] mb-4">
+      <div className="p-4 bg-[#0F1419]/50 backdrop-blur-sm rounded-lg border-l-4 border-[#2C7A7B] mb-4 relative z-10">
         <h4 className="text-[#2C7A7B] text-sm font-semibold mb-1">Market Outlook</h4>
         <p className="text-white/80 text-sm">{commentary.outlook}</p>
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between text-white/50 text-xs pt-4 border-t border-white/10">
+      <div className="flex items-center justify-between text-white/50 text-xs pt-4 border-t border-white/10 relative z-10">
         <div className="flex items-center gap-2">
           <User size={14} />
           <span>{commentary.author}</span>

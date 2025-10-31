@@ -44,9 +44,9 @@ export default function HeatMap({ data, title }: HeatMapProps) {
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#1A2332]/90 via-[#1A2332]/80 to-[#2C3E50]/90 backdrop-blur-xl border border-[#D4AF37]/30 rounded-xl p-6 shadow-2xl">
-      <h3 className="text-xl font-bold text-[#D4AF37] mb-6">{title}</h3>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none">
+      <h3 className="text-xl font-bold text-[#D4AF37] mb-6 relative z-10">{title}</h3>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 relative z-10">
         {spreads.map((spread, index) => {
           const change = getChangePercentage(spread);
           const value = parseFloat(latestData[spread]) || 0;
@@ -58,10 +58,10 @@ export default function HeatMap({ data, title }: HeatMapProps) {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.05 }}
               onClick={() => setSelectedSpread(spread)}
-              className="relative overflow-hidden rounded-lg p-4 cursor-pointer group hover:scale-105 transition-transform"
+              className="relative overflow-hidden rounded-xl p-5 cursor-pointer group hover:scale-105 transition-all backdrop-blur-md shadow-lg hover:shadow-2xl"
               style={{
                 backgroundColor: getHeatColor(change),
-                border: `1px solid ${change > 0 ? '#22c55e' : change < 0 ? '#ef4444' : '#64748b'}40`,
+                border: `2px solid ${change > 0 ? '#22c55e' : change < 0 ? '#ef4444' : '#64748b'}60`,
               }}
             >
               <div className="relative z-10">

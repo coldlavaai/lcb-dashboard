@@ -65,13 +65,13 @@ export default function CorrelationMatrix({ data }: CorrelationMatrixProps) {
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#1A2332]/90 via-[#1A2332]/80 to-[#2C3E50]/90 backdrop-blur-xl border border-[#D4AF37]/30 rounded-xl p-6 shadow-2xl">
-      <h3 className="text-xl font-bold text-[#D4AF37] mb-4">Market Correlation Matrix</h3>
-      <p className="text-white/60 text-sm mb-4">
+    <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none">
+      <h3 className="text-xl font-bold text-[#D4AF37] mb-4 relative z-10">Market Correlation Matrix</h3>
+      <p className="text-white/60 text-sm mb-4 relative z-10">
         Correlation coefficients between major markets • Last 365 days
       </p>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto relative z-10">
         <table className="w-full border-collapse">
           <thead>
             <tr>
@@ -95,7 +95,7 @@ export default function CorrelationMatrix({ data }: CorrelationMatrixProps) {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: (i + j) * 0.02 }}
-                      className="w-12 h-12 rounded flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:scale-110 transition-transform"
+                      className="w-14 h-14 lg:w-16 lg:h-16 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:scale-110 transition-all backdrop-blur-sm shadow-lg"
                       style={{
                         backgroundColor: getCorrelationColor(correlationData[i]?.[j] || 0),
                       }}
@@ -111,7 +111,7 @@ export default function CorrelationMatrix({ data }: CorrelationMatrixProps) {
         </table>
       </div>
 
-      <div className="mt-4 flex items-center gap-6 text-xs text-white/60">
+      <div className="mt-4 flex items-center gap-6 text-xs text-white/60 relative z-10">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded bg-green-500"></div>
           <span>Strong Positive (&gt;0.7)</span>

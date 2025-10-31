@@ -9,6 +9,7 @@ import { Download, Bell, Settings, ChevronDown, LayoutGrid } from 'lucide-react'
 import HeatMap from '../components/HeatMap';
 import CorrelationMatrix from '../components/CorrelationMatrix';
 import MarketDataTable from '../components/MarketDataTable';
+import CompleteDataTable from '../components/CompleteDataTable';
 import AdvancedChart from '../components/AdvancedChart';
 import CommentaryPanel from '../components/CommentaryPanel';
 import LiveTicker from '../components/LiveTicker';
@@ -16,6 +17,7 @@ import CustomDatePicker from '../components/CustomDatePicker';
 
 // Import data
 import cottonData from '../data/cotton_data.json';
+import cottonDataFull from '../data/cotton_data_full.json';
 
 type TimeRange = '7d' | '30d' | '90d' | '1y' | 'all';
 type ViewMode = 'overview' | 'spreads' | 'markets' | 'data';
@@ -323,7 +325,7 @@ export default function Dashboard() {
             animate={{ opacity: 1 }}
             className="space-y-8"
           >
-            <MarketDataTable data={filteredData} />
+            <CompleteDataTable data={cottonDataFull as any[]} />
             <CorrelationMatrix data={filteredData} />
           </motion.div>
         )}

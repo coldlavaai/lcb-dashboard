@@ -58,8 +58,8 @@ export default function MarketDataTable({ data }: MarketDataTableProps) {
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#1A2332]/90 via-[#1A2332]/80 to-[#2C3E50]/90 backdrop-blur-xl border border-[#D4AF37]/30 rounded-xl p-6 shadow-2xl">
-      <div className="flex items-center justify-between mb-4">
+    <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none">
+      <div className="flex items-center justify-between mb-4 relative z-10">
         <h3 className="text-xl font-bold text-[#D4AF37]">Historical Data Table</h3>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={16} />
@@ -73,7 +73,7 @@ export default function MarketDataTable({ data }: MarketDataTableProps) {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto relative z-10">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-white/10">

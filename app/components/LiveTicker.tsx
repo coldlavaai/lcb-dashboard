@@ -153,7 +153,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
 
   return (
     <div
-      className="bg-[#0F1419] border-y border-[#D4AF37]/20 overflow-hidden relative"
+      className="bg-[#0F1419]/80 backdrop-blur-xl border-y border-white/20 overflow-hidden relative shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
