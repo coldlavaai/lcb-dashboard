@@ -53,6 +53,13 @@ export default function Dashboard() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [layout, setLayout] = useState<LayoutConfig>(DEFAULT_LAYOUT);
 
+  // Section-specific comparison modes (null means use global)
+  const [sectionComparisonModes, setSectionComparisonModes] = useState<Record<string, ComparisonMode | null>>({
+    heatmap: null,
+    volatility: null,
+    markets: null,
+  });
+
   // Load layout on mount
   useEffect(() => {
     setLayout(loadLayout());
@@ -307,7 +314,15 @@ export default function Dashboard() {
                     >
                       {section.id === 'heatmap-volatility' && (
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                          <HeatMap data={filteredData} title="Spread Heat Map" comparisonMode={comparisonMode} />
+                          <HeatMap
+                            data={filteredData}
+                            title="Spread Heat Map"
+                            comparisonMode={comparisonMode}
+                            sectionComparisonMode={sectionComparisonModes.heatmap}
+                            onComparisonChange={(mode) =>
+                              setSectionComparisonModes(prev => ({ ...prev, heatmap: mode }))
+                            }
+                          />
                           <VolatilityDashboard data={filteredData} />
                         </div>
                       )}
@@ -431,7 +446,15 @@ export default function Dashboard() {
             animate={{ opacity: 1 }}
             className="space-y-10"
           >
-            <HeatMap data={filteredData} title="Global Market Overview" comparisonMode={comparisonMode} />
+            <HeatMap
+              data={filteredData}
+              title="Global Market Overview"
+              comparisonMode={comparisonMode}
+              sectionComparisonMode={sectionComparisonModes.markets}
+              onComparisonChange={(mode) =>
+                setSectionComparisonModes(prev => ({ ...prev, markets: mode }))
+              }
+            />
             <CorrelationMatrix data={filteredData} />
 
             {/* Market Charts Grid */}

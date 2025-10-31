@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import DetailModal from './DetailModal';
 import { ComparisonMode } from './ComparisonSelector';
+import SectionComparisonSelector from './SectionComparisonSelector';
 import { getComparisonDataPoint, calculatePercentageChange, calculatePointChange } from '../utils/comparisonUtils';
 import theme from '@/lib/theme';
 
@@ -12,10 +13,21 @@ interface HeatMapProps {
   data: any[];
   title: string;
   comparisonMode?: ComparisonMode;
+  onComparisonChange?: (mode: ComparisonMode | null) => void;
+  sectionComparisonMode?: ComparisonMode | null;
 }
 
-export default function HeatMap({ data, title, comparisonMode = 'latest' }: HeatMapProps) {
+export default function HeatMap({
+  data,
+  title,
+  comparisonMode = 'latest',
+  onComparisonChange,
+  sectionComparisonMode = null,
+}: HeatMapProps) {
   const [selectedSpread, setSelectedSpread] = useState<string | null>(null);
+
+  // Use section-specific mode if set, otherwise use global
+  const activeComparisonMode = sectionComparisonMode ?? comparisonMode;
 
   // Check if MCX data is available in latest record
   const latestData = data[0] || {};
@@ -36,7 +48,7 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
 
   const getChangeValue = (spread: string) => {
     const current = parseFloat(latestData[spread]) || 0;
-    const { compareIndex } = getComparisonDataPoint(data, 0, comparisonMode);
+    const { compareIndex } = getComparisonDataPoint(data, 0, activeComparisonMode);
 
     if (compareIndex === -1 || !data[compareIndex]) return 0;
 
@@ -57,10 +69,20 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
 
   return (
     <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none overflow-hidden group">
-      <h3 className="text-2xl font-bold text-[#D4AF37] mb-10 relative z-10 flex items-center gap-3">
-        <span className="h-1 w-12 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
-        {title}
-      </h3>
+      <div className="flex items-center justify-between mb-10 relative z-10">
+        <h3 className="text-2xl font-bold text-[#D4AF37] flex items-center gap-3">
+          <span className="h-1 w-12 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
+          {title}
+        </h3>
+        {onComparisonChange && (
+          <SectionComparisonSelector
+            value={sectionComparisonMode}
+            globalValue={comparisonMode}
+            onChange={onComparisonChange}
+            compact
+          />
+        )}
+      </div>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6 relative z-10">
         {spreads.map((spread, index) => {
           const change = getChangeValue(spread);
@@ -138,7 +160,7 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
             selectedSpread === 'CZCE Cotton - PSF' ? '#E07A5F' :
             '#4F46E5'
           }
-          comparisonMode={comparisonMode}
+          comparisonMode={activeComparisonMode}
         />
       )}
     </div>
