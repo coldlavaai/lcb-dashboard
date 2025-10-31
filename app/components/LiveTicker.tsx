@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, AlertCircle, Activity } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { TrendingUp, TrendingDown, AlertCircle, Activity, Info } from 'lucide-react';
 import DetailModal from './DetailModal';
 import { ComparisonMode } from './ComparisonSelector';
 import { getComparisonDataPoint, calculatePercentageChange, calculatePointChange } from '../utils/comparisonUtils';
@@ -15,6 +16,7 @@ interface TickerItem {
   alert?: boolean;
   dataKey: string;
   isSpread?: boolean; // Indicates if this is a spread (should use points not %)
+  description?: string; // Tooltip description
 }
 
 interface LiveTickerProps {
@@ -25,6 +27,20 @@ interface LiveTickerProps {
 export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTickerProps) {
   const [isPaused, setIsPaused] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [showLegend, setShowLegend] = useState(false);
+
+  // Get comparison label
+  const getComparisonLabel = () => {
+    switch (comparisonMode) {
+      case 'latest': return 'vs Previous Day';
+      case 'week': return 'vs Last Week';
+      case 'month': return 'vs Last Month';
+      case 'year': return 'vs Last Year';
+      case 'decade': return 'vs 10 Years Ago';
+      case 'custom': return 'vs Custom';
+      default: return 'vs Previous';
+    }
+  };
 
   // Calculate ticker items from data
   const getTickerItems = (): TickerItem[] => {
@@ -49,13 +65,14 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
       const change = calculatePointChange(current, prev); // Use point change for spreads
       items.push({
         id: 'czce-ice',
-        label: 'CZCE-ICE',
+        label: 'CZCE-ICE Spread',
         value: current.toFixed(2) + '¢',
         change: change,
         trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
         alert: Math.abs(change) > 2, // Alert if >2 point move
         dataKey: 'CZCE - ICE',
-        isSpread: true
+        isSpread: true,
+        description: 'China (CZCE) vs US (ICE) Cotton Futures Spread'
       });
     }
 
@@ -66,12 +83,13 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
       const change = calculatePointChange(current, prev); // Use point change for spreads
       items.push({
         id: 'awp-ice',
-        label: 'AWP-ICE',
+        label: 'AWP-ICE Spread',
         value: current.toFixed(2) + '¢',
         change: change,
         trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
         dataKey: 'AWP - ICE',
-        isSpread: true
+        isSpread: true,
+        description: 'Adjusted World Price vs US (ICE) Cotton Futures Spread'
       });
     }
 
@@ -82,12 +100,13 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
       const change = calculatePointChange(current, prev); // Use point change for spreads
       items.push({
         id: 'mcx-ice',
-        label: 'MCX-ICE',
+        label: 'MCX-ICE Spread',
         value: current.toFixed(2) + '¢',
         change: change,
         trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
         dataKey: 'MCX - ICE',
-        isSpread: true
+        isSpread: true,
+        description: 'India (MCX) vs US (ICE) Cotton Futures Spread'
       });
     }
 
@@ -98,11 +117,12 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
       const change = calculatePercentageChange(current, prev);
       items.push({
         id: 'ice-cotton',
-        label: 'ICE Cotton',
+        label: 'ICE Cotton No. 2',
         value: current.toFixed(2) + '¢',
         change: change,
         trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
-        dataKey: 'ICE'
+        dataKey: 'ICE',
+        description: 'US Cotton Futures (ICE) - Main Benchmark Price'
       });
     }
 
@@ -111,10 +131,11 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
       const volume = parseFloat(latest['Volume']);
       items.push({
         id: 'volume',
-        label: 'Volume',
+        label: 'Trading Volume',
         value: (volume / 1000).toFixed(1) + 'K',
         trend: 'neutral',
-        dataKey: 'Volume'
+        dataKey: 'Volume',
+        description: 'Number of contracts traded (in thousands)'
       });
     }
 
@@ -126,7 +147,8 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
         label: 'Open Interest',
         value: (oi / 1000).toFixed(1) + 'K',
         trend: 'neutral',
-        dataKey: 'O/I'
+        dataKey: 'O/I',
+        description: 'Total outstanding contracts (in thousands)'
       });
     }
 
@@ -137,12 +159,13 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
       const change = calculatePointChange(current, prev); // Use point change for spreads
       items.push({
         id: 'cotton-psf',
-        label: 'Cotton-PSF',
+        label: 'Cotton-PSF Spread',
         value: current.toFixed(2),
         change: change,
         trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
         dataKey: 'CZCE Cotton - PSF',
-        isSpread: true
+        isSpread: true,
+        description: 'Cotton vs Polyester Staple Fiber Spread'
       });
     }
 
@@ -151,10 +174,11 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
       const current = parseFloat(latest['A-Index']);
       items.push({
         id: 'a-index',
-        label: 'A-Index',
+        label: 'Cotlook A-Index',
         value: current.toFixed(2) + '¢',
         trend: 'neutral',
-        dataKey: 'A-Index'
+        dataKey: 'A-Index',
+        description: 'International Cotton Price Benchmark'
       });
     }
 
@@ -174,11 +198,23 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
     >
       {/* Ticker content */}
       <div className="flex items-center py-2 px-4">
-        <div className="flex items-center gap-2 mr-6 flex-shrink-0">
+        <div className="flex items-center gap-3 mr-6 flex-shrink-0">
           <Activity size={16} className="text-[#D4AF37]" />
-          <span className="text-white/70 text-xs font-semibold uppercase tracking-wide">
-            Live Market Data
-          </span>
+          <div className="flex flex-col">
+            <span className="text-white/70 text-xs font-semibold uppercase tracking-wide">
+              Live Market Data
+            </span>
+            <span className="text-white/50 text-[10px] font-medium">
+              {getComparisonLabel()}
+            </span>
+          </div>
+          <button
+            onClick={() => setShowLegend(!showLegend)}
+            className="p-1.5 hover:bg-white/10 rounded-lg transition-colors group/info"
+            title="Show legend"
+          >
+            <Info size={14} className="text-white/40 group-hover/info:text-[#D4AF37] transition-colors" />
+          </button>
         </div>
 
         {/* Scrolling ticker */}
@@ -194,7 +230,8 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
               <div
                 key={`${item.id}-${index}`}
                 onClick={() => setSelectedItem(item.dataKey)}
-                className="flex items-center gap-3 whitespace-nowrap cursor-pointer hover:bg-white/5 px-4 py-2 rounded-lg transition-colors"
+                className="flex items-center gap-3 whitespace-nowrap cursor-pointer hover:bg-white/5 px-4 py-2 rounded-lg transition-colors group/item"
+                title={item.description || item.label}
               >
                 {/* Alert icon for significant changes */}
                 {item.alert && (
@@ -249,6 +286,59 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
           animation: scroll 45s linear infinite;
         }
       `}</style>
+
+      {/* Legend Panel */}
+      {showLegend && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="bg-gradient-to-r from-[#1A2332]/95 to-[#2C3E50]/95 backdrop-blur-lg border-t border-white/10 px-8 py-4"
+        >
+          <div className="flex items-start gap-8 text-xs">
+            <div>
+              <p className="text-[#D4AF37] font-bold mb-2">Legend</p>
+              <div className="space-y-1.5 text-white/70">
+                <p><span className="text-white font-semibold">¢</span> = US cents per pound</p>
+                <p><span className="text-white font-semibold">pts</span> = Points (absolute change for spreads)</p>
+                <p><span className="text-white font-semibold">%</span> = Percentage change</p>
+                <p><span className="text-white font-semibold">K</span> = Thousands of contracts</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-[#D4AF37] font-bold mb-2">Key Spreads</p>
+              <div className="space-y-1.5 text-white/70">
+                <p><span className="text-white font-semibold">CZCE-ICE:</span> China vs US futures</p>
+                <p><span className="text-white font-semibold">AWP-ICE:</span> World price vs US</p>
+                <p><span className="text-white font-semibold">MCX-ICE:</span> India vs US futures</p>
+                <p><span className="text-white font-semibold">Cotton-PSF:</span> Cotton vs Polyester</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-[#D4AF37] font-bold mb-2">Indicators</p>
+              <div className="space-y-1.5 text-white/70">
+                <p className="flex items-center gap-2">
+                  <TrendingUp size={14} className="text-green-400" />
+                  <span>Positive movement</span>
+                </p>
+                <p className="flex items-center gap-2">
+                  <TrendingDown size={14} className="text-red-400" />
+                  <span>Negative movement</span>
+                </p>
+                <p className="flex items-center gap-2">
+                  <AlertCircle size={14} className="text-yellow-400" />
+                  <span>Significant change (&gt;2pts)</span>
+                </p>
+              </div>
+            </div>
+            <div className="ml-auto">
+              <p className="text-white/50 text-[10px] italic">
+                Click any item to view detailed historical analysis
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Detail Modal */}
       {selectedItem && (

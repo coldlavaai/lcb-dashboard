@@ -15,6 +15,7 @@ import CommentaryPanel from '../components/CommentaryPanel';
 import LiveTicker from '../components/LiveTicker';
 import CustomDatePicker from '../components/CustomDatePicker';
 import ComparisonSelector, { ComparisonMode } from '../components/ComparisonSelector';
+import SettingsModal from '../components/SettingsModal';
 
 // Import data
 import cottonData from '../data/cotton_data.json';
@@ -33,6 +34,7 @@ export default function Dashboard() {
   });
   const [useCustomRange, setUseCustomRange] = useState(false);
   const [comparisonMode, setComparisonMode] = useState<ComparisonMode>('latest');
+  const [showSettings, setShowSettings] = useState(false);
 
   const getFilteredData = () => {
     // No filtering needed - all data is valid
@@ -188,6 +190,7 @@ export default function Dashboard() {
               <motion.button
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
+                onClick={() => setShowSettings(true)}
                 className="p-2.5 bg-[#0F1419]/80 hover:bg-white/10 text-white/70 hover:text-white rounded-xl transition-all border border-white/10 hover:border-white/30"
               >
                 <Settings size={18} />
@@ -383,6 +386,9 @@ export default function Dashboard() {
           </p>
         </motion.div>
       </main>
+
+      {/* Settings Modal */}
+      <SettingsModal isOpen={showSettings} onClose={() => setShowSettings(false)} />
     </div>
   );
 }
