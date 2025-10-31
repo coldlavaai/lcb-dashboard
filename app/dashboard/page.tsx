@@ -183,23 +183,23 @@ export default function Dashboard() {
       {/* Live Ticker */}
       <LiveTicker data={filteredData} />
 
-      <main className="max-w-[2000px] mx-auto px-8 py-8">
+      <main className="max-w-[2000px] mx-auto px-8 py-10">
         {/* Overview Mode */}
         {viewMode === 'overview' && (
           <motion.div
             key="overview"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="space-y-8"
+            className="space-y-10"
           >
             {/* Row 1: Heat Map + Correlation Matrix */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
               <HeatMap data={filteredData} title="Spread Heat Map" />
               <CorrelationMatrix data={filteredData} />
             </div>
 
             {/* Row 2: Main Chart + Commentary */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
               <div className="xl:col-span-2">
                 <AdvancedChart
                   data={filteredData}
@@ -243,10 +243,10 @@ export default function Dashboard() {
             key="spreads"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="space-y-8"
+            className="space-y-10"
           >
             {/* Spread Selector */}
-            <div className="flex gap-3 flex-wrap">
+            <div className="flex gap-4 flex-wrap">
               {spreads.map((spread) => (
                 <motion.button
                   key={spread.id}
@@ -268,7 +268,7 @@ export default function Dashboard() {
             </div>
 
             {/* Main Spread Analysis */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
               <div className="xl:col-span-2">
                 <AdvancedChart
                   data={filteredData}
@@ -284,7 +284,7 @@ export default function Dashboard() {
             </div>
 
             {/* All Spreads Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               {spreads.filter(s => s.id !== selectedSpread).map((spread) => (
                 <AdvancedChart
                   key={spread.id}
@@ -305,13 +305,13 @@ export default function Dashboard() {
             key="markets"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="space-y-8"
+            className="space-y-10"
           >
             <HeatMap data={filteredData} title="Global Market Overview" />
             <CorrelationMatrix data={filteredData} />
 
             {/* Market Charts Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               {[
                 { field: 'ICE', title: 'ICE (US)', color: '#4F46E5' },
                 { field: 'CZCE cotton usc/lb', title: 'CZCE (China)', color: '#DC2626' },
@@ -337,7 +337,7 @@ export default function Dashboard() {
             key="data"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="space-y-8"
+            className="space-y-10"
           >
             <CompleteDataTable data={filteredFullData as any[]} />
             <CorrelationMatrix data={filteredData} />

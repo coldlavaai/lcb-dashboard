@@ -169,7 +169,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
         {/* Scrolling ticker */}
         <div className="flex-1 overflow-hidden">
           <div
-            className="flex gap-8 animate-scroll"
+            className="flex gap-12 animate-scroll"
             style={{
               width: 'max-content',
               animationPlayState: isPaused ? 'paused' : 'running'
@@ -179,7 +179,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
               <div
                 key={`${item.id}-${index}`}
                 onClick={() => setSelectedItem(item.dataKey)}
-                className="flex items-center gap-2 whitespace-nowrap cursor-pointer hover:bg-white/5 px-3 py-1 rounded-lg transition-colors"
+                className="flex items-center gap-3 whitespace-nowrap cursor-pointer hover:bg-white/5 px-4 py-2 rounded-lg transition-colors"
               >
                 {/* Alert icon for significant changes */}
                 {item.alert && (
@@ -198,7 +198,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
 
                 {/* Change & Trend */}
                 {item.change !== undefined && (
-                  <div className={`flex items-center gap-0.5 ${
+                  <div className={`flex items-center gap-1 ${
                     item.trend === 'up' ? 'text-green-400' :
                     item.trend === 'down' ? 'text-red-400' :
                     'text-white/50'
@@ -212,7 +212,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
                 )}
 
                 {/* Separator */}
-                <span className="text-white/20 text-lg mx-2">|</span>
+                <span className="text-white/20 text-lg mx-4">|</span>
               </div>
             ))}
           </div>
