@@ -108,17 +108,17 @@ export default function DetailModal({
           />
 
           {/* Modal Container */}
-          <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 pointer-events-none overflow-y-auto">
+          <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 pointer-events-none">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative bg-gradient-to-br from-[#1A2332]/98 via-[#1A2332]/95 to-[#2C3E50]/98 backdrop-blur-2xl border-2 border-[#D4AF37]/40 rounded-2xl shadow-[0_24px_64px_rgba(0,0,0,0.8)] max-w-5xl w-full my-8 pointer-events-auto overflow-hidden"
+              className="relative bg-gradient-to-br from-[#1A2332]/98 via-[#1A2332]/95 to-[#2C3E50]/98 backdrop-blur-2xl border-2 border-[#D4AF37]/40 rounded-2xl shadow-[0_24px_64px_rgba(0,0,0,0.8)] max-w-5xl w-full pointer-events-auto overflow-hidden flex flex-col max-h-[90vh]"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Header - Always Visible */}
-              <div className="bg-gradient-to-r from-[#1A2332] to-[#2C3E50] border-b-2 border-[#D4AF37]/40 p-6 flex items-center justify-between">
+              {/* Header - Always Visible (Sticky) */}
+              <div className="bg-gradient-to-r from-[#1A2332] to-[#2C3E50] border-b-2 border-[#D4AF37]/40 p-6 flex items-center justify-between flex-shrink-0">
                 <div className="flex-1 min-w-0">
                   <h2 className="text-2xl font-bold text-[#D4AF37] flex items-center gap-2">
                     <Activity size={24} style={{ color }} />
@@ -141,7 +141,7 @@ export default function DetailModal({
               </div>
 
               {/* Content - Scrollable */}
-              <div className="p-6 space-y-6 max-h-[calc(90vh-200px)] overflow-y-auto">
+              <div className="p-6 space-y-6 overflow-y-auto flex-1">
                 {/* Current Value & Change */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-[#0F1419]/50 rounded-xl p-4 border border-white/10">
@@ -295,8 +295,8 @@ export default function DetailModal({
                 </div>
               </div>
 
-              {/* Footer */}
-              <div className="border-t-2 border-[#D4AF37]/40 p-6 flex items-center justify-between bg-gradient-to-r from-[#1A2332] to-[#2C3E50]">
+              {/* Footer - Always Visible (Sticky) */}
+              <div className="border-t-2 border-[#D4AF37]/40 p-6 flex items-center justify-between bg-gradient-to-r from-[#1A2332] to-[#2C3E50] flex-shrink-0">
                 <p className="text-white/60 text-sm flex items-center gap-2">
                   <Calendar size={16} />
                   Last updated: {new Date(data[0]?.Date).toLocaleDateString('en-US', {
