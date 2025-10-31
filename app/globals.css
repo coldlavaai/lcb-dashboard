@@ -188,50 +188,152 @@ html {
   padding: 1rem;
 }
 
-/* Mobile-First Optimizations */
+/* Mobile-First App Optimizations */
 @media (max-width: 768px) {
-  /* FORCE 2-COLUMN GRID ON MOBILE */
-  .grid-cols-1 {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-
-  /* Exception: Keep single column for certain sections */
-  .grid-cols-1.mobile-single-col,
-  .mobile-single-col .grid-cols-1 {
-    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-  }
-
-  /* Compact spacing */
+  /* Body adjustments */
   body {
     padding: 0 !important;
+    overflow-x: hidden;
+  }
+
+  /* Main container spacing */
+  main {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
   }
 
   .max-w-\[2000px\] {
-    padding-left: 0.75rem !important;
-    padding-right: 0.75rem !important;
-    padding-top: 0.5rem !important;
-    padding-bottom: 0.5rem !important;
+    max-width: 100% !important;
   }
 
-  /* Reduce chart heights */
+  /* Grid layouts - Always single column on mobile */
+  .grid-cols-1,
+  .grid-cols-2,
+  [class*="grid-cols-"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Exception: Small stat cards can be 2 columns */
+  .grid.stat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Compact spacing between sections */
+  .space-y-12 > * + *,
+  .space-y-10 > * + * {
+    margin-top: 1.25rem !important;
+  }
+
+  .space-y-8 > * + * {
+    margin-top: 1rem !important;
+  }
+
+  .gap-12,
+  .gap-10 {
+    gap: 1rem !important;
+  }
+
+  .gap-8,
+  .gap-6 {
+    gap: 0.75rem !important;
+  }
+
+  /* Card and container padding */
+  .p-10,
+  .p-8 {
+    padding: 1rem !important;
+  }
+
+  .p-6 {
+    padding: 0.875rem !important;
+  }
+
+  .px-8 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .py-12,
+  .py-10,
+  .py-8 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  /* Typography - Scaled down but readable */
+  h1, .text-3xl, .text-4xl {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
+  h2, .text-2xl {
+    font-size: 1.25rem !important;
+    line-height: 1.75rem !important;
+  }
+
+  h3, .text-xl {
+    font-size: 1.125rem !important;
+    line-height: 1.5rem !important;
+  }
+
+  .text-lg {
+    font-size: 1rem !important;
+  }
+
+  .text-base {
+    font-size: 0.875rem !important;
+  }
+
+  .text-sm {
+    font-size: 0.8125rem !important;
+  }
+
+  .text-xs {
+    font-size: 0.75rem !important;
+  }
+
+  /* Charts - Optimized height for mobile */
   .recharts-responsive-container {
-    max-height: 200px !important;
-  }
-
-  /* Compact cards */
-  [class*="rounded-2xl"],
-  [class*="rounded-xl"] {
-    border-radius: 0.75rem !important;
-    padding: 0.75rem !important;
+    max-height: 240px !important;
+    min-height: 200px !important;
   }
 
   /* Better touch targets */
-  button, a, [role="button"] {
-    min-height: 40px;
-    min-width: 40px;
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+    padding-top: 0.625rem !important;
+    padding-bottom: 0.625rem !important;
   }
 
-  /* Horizontal scroll containers */
+  /* Rounded corners - slightly smaller */
+  .rounded-2xl {
+    border-radius: 1rem !important;
+  }
+
+  .rounded-xl {
+    border-radius: 0.75rem !important;
+  }
+
+  /* Table responsiveness */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    border-radius: 0.75rem;
+  }
+
+  table {
+    font-size: 0.75rem !important;
+  }
+
+  th, td {
+    padding: 0.5rem !important;
+  }
+
+  /* Horizontal scroll for multi-item displays */
   .mobile-scroll {
     display: flex !important;
     overflow-x: auto !important;
@@ -239,92 +341,36 @@ html {
     gap: 0.75rem !important;
     padding-bottom: 0.5rem !important;
     -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none;
+  }
+
+  .mobile-scroll::-webkit-scrollbar {
+    display: none;
   }
 
   .mobile-scroll > * {
-    flex: 0 0 85% !important;
+    flex: 0 0 90% !important;
     scroll-snap-align: start !important;
   }
 
-  /* Compact headers */
-  h1 {
-    font-size: 1.25rem !important;
-    line-height: 1.5rem !important;
-  }
-
-  h2 {
-    font-size: 1.125rem !important;
-    line-height: 1.375rem !important;
-  }
-
-  h3 {
-    font-size: 1rem !important;
-    line-height: 1.25rem !important;
-  }
-
-  /* Tighter gaps */
-  .space-y-12 > * + *,
-  .space-y-10 > * + * {
-    margin-top: 1rem !important;
-  }
-
-  .gap-12,
-  .gap-10,
-  .gap-8 {
-    gap: 0.75rem !important;
-  }
-
-  /* Smaller text */
-  .text-base {
-    font-size: 0.875rem !important;
-  }
-
-  .text-sm {
+  /* Live Ticker - Compact mobile version */
+  .live-ticker {
     font-size: 0.75rem !important;
+    padding: 0.5rem 1rem !important;
   }
 
-  /* Compact padding */
-  .p-10,
-  .p-8,
-  .p-6 {
-    padding: 0.75rem !important;
-  }
-
-  .px-8,
-  .px-6 {
-    padding-left: 0.75rem !important;
-    padding-right: 0.75rem !important;
-  }
-
-  .py-12,
-  .py-10,
-  .py-8 {
-    padding-top: 0.75rem !important;
-    padding-bottom: 0.75rem !important;
-  }
-
-  /* Hide less important elements on mobile */
-  .mobile-hide {
-    display: none !important;
-  }
-
-  /* Full-screen modals */
-  [class*="fixed"][class*="inset"] {
-    inset: 0 !important;
-    border-radius: 0 !important;
+  /* Modal fullscreen on mobile */
+  [role="dialog"] {
+    width: 100% !important;
+    height: 100% !important;
     max-width: 100% !important;
     max-height: 100vh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
   }
 
-  /* Table improvements */
-  .overflow-x-auto {
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x proximity;
-  }
-
-  /* Stat grids - 2 columns */
-  [class*="grid-cols-4"],
-  [class*="grid-cols-3"] {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  /* Bottom nav spacing */
+  .pb-20 {
+    padding-bottom: 5rem !important;
   }
 }

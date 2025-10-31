@@ -21,6 +21,9 @@ import SettingsModal from '../components/SettingsModal';
 import DraggableSection from '../components/DraggableSection';
 import VolatilityDashboard from '../components/VolatilityDashboard';
 import RawMaterialsGrid from '../components/RawMaterialsGrid';
+import MobileMenu from '../components/MobileMenu';
+import MobileHeader from '../components/MobileHeader';
+import BottomNavigation from '../components/BottomNavigation';
 
 // Import utilities
 import {
@@ -52,6 +55,7 @@ export default function Dashboard() {
   const [showSettings, setShowSettings] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [layout, setLayout] = useState<LayoutConfig>(DEFAULT_LAYOUT);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   // Section-specific comparison modes (null means use global)
   const [sectionComparisonModes, setSectionComparisonModes] = useState<Record<string, ComparisonMode | null>>({
@@ -148,12 +152,29 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom right, #0A0B0D, #13151A, #1C1F26)' }}>
-      {/* Header */}
+    <div className="min-h-screen pb-20 md:pb-0" style={{ background: 'linear-gradient(to bottom right, #0A0B0D, #13151A, #1C1F26)' }}>
+      {/* Mobile Header */}
+      <MobileHeader
+        mobileMenuButton={
+          <MobileMenu
+            timeRange={timeRange}
+            onTimeRangeChange={setTimeRange}
+            useCustomRange={useCustomRange}
+            onResetCustomRange={() => setUseCustomRange(false)}
+            comparisonMode={comparisonMode}
+            onComparisonChange={setComparisonMode}
+            onExportPDF={() => {}}
+            onShowSettings={() => setShowSettings(true)}
+            onShowDatePicker={() => setShowDatePicker(true)}
+          />
+        }
+      />
+
+      {/* Desktop Header */}
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className="bg-gradient-to-r from-[#0D1B2A]/98 via-[#1B263B]/98 to-[#0D1B2A]/98 backdrop-blur-2xl border-b-2 border-[#D4AF37]/30 sticky top-0 z-50 shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]"
+        className="hidden md:block bg-gradient-to-r from-[#0D1B2A]/98 via-[#1B263B]/98 to-[#0D1B2A]/98 backdrop-blur-2xl border-b-2 border-[#D4AF37]/30 sticky top-0 z-50 shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]"
       >
         <div className="max-w-[2000px] mx-auto px-8 py-5">
           <div className="flex items-center justify-between gap-6">
@@ -534,6 +555,41 @@ export default function Dashboard() {
 
       {/* Settings Modal */}
       <SettingsModal isOpen={showSettings} onClose={() => setShowSettings(false)} />
+
+      {/* Custom Date Picker Modal - Mobile */}
+      {showDatePicker && (
+        <div className="md:hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[80] flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-[#1A2332] rounded-2xl p-6 max-w-sm w-full border-2 border-[#D4AF37]/30"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-white">Select Date Range</h3>
+              <button
+                onClick={() => setShowDatePicker(false)}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <motion.span className="text-white/70 text-xl">×</motion.span>
+              </button>
+            </div>
+            <CustomDatePicker
+              onRangeChange={(start, end) => {
+                handleCustomDateRange(start, end);
+                setShowDatePicker(false);
+              }}
+              minDate={minDataDate}
+              maxDate={maxDataDate}
+            />
+          </motion.div>
+        </div>
+      )}
+
+      {/* Bottom Navigation - Mobile */}
+      <BottomNavigation
+        activeView={viewMode}
+        onViewChange={setViewMode}
+      />
     </div>
   );
 }
