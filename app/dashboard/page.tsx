@@ -133,6 +133,10 @@ export default function Dashboard() {
 
   // Check if MCX data is available in latest record
   const latestData = filteredData[0] || {};
+
+  // Get actual date range from data for date picker constraints
+  const minDataDate = cottonData.length > 0 ? new Date(cottonData[cottonData.length - 1].Date) : new Date('2005-01-01');
+  const maxDataDate = cottonData.length > 0 ? new Date(cottonData[0].Date) : new Date();
   const hasMCXData = latestData['MCX'] != null && latestData['MCX usc/lb'] != null;
 
   // Only include MCX spread if data is available
@@ -224,7 +228,11 @@ export default function Dashboard() {
               </div>
 
               {/* Custom Date Picker */}
-              <CustomDatePicker onRangeChange={handleCustomDateRange} />
+              <CustomDatePicker
+                onRangeChange={handleCustomDateRange}
+                minDate={minDataDate}
+                maxDate={maxDataDate}
+              />
 
               {/* Comparison Selector */}
               <ComparisonSelector value={comparisonMode} onChange={setComparisonMode} />

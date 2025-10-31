@@ -193,6 +193,10 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
 
   const currentCategory = columnCategories[activeTab];
 
+  // Get min/max dates from data for input constraints
+  const minDate = data.length > 0 ? data[data.length - 1]['Date'] : '2005-01-01';
+  const maxDate = data.length > 0 ? data[0]['Date'] : new Date().toISOString().split('T')[0];
+
   return (
     <div className="bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] overflow-hidden">
       {/* Header with Tabs */}
@@ -239,6 +243,8 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
+                    min={minDate}
+                    max={maxDate}
                     className="px-3 py-2 bg-[#0F1419]/50 border border-white/20 rounded-lg text-white text-sm focus:border-[#D4AF37] focus:outline-none"
                   />
                 </div>
@@ -248,6 +254,8 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
+                    min={minDate}
+                    max={maxDate}
                     className="px-3 py-2 bg-[#0F1419]/50 border border-white/20 rounded-lg text-white text-sm focus:border-[#D4AF37] focus:outline-none"
                   />
                 </div>
