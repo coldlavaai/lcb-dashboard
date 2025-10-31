@@ -83,7 +83,7 @@ export default function HeatMap({
           />
         )}
       </div>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6 relative z-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 md:gap-6 relative z-10 mobile-card-grid">
         {spreads.map((spread, index) => {
           const change = getChangeValue(spread);
           const value = parseFloat(latestData[spread]) || 0;
@@ -97,7 +97,7 @@ export default function HeatMap({
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setSelectedSpread(spread)}
-              className="relative overflow-hidden rounded-2xl p-8 backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300 min-h-[180px] flex flex-col justify-between cursor-pointer"
+              className="relative overflow-hidden rounded-2xl p-4 md:p-8 backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300 min-h-[140px] md:min-h-[180px] flex flex-col justify-between cursor-pointer"
               style={{
                 backgroundColor: getHeatColor(change),
                 border: `2px solid ${change > 0 ? theme.colors.data.profit : change < 0 ? theme.colors.data.loss : theme.colors.data.neutral}80`,
@@ -110,7 +110,7 @@ export default function HeatMap({
                   </p>
                 </div>
                 <div>
-                  <p className="text-white text-4xl font-black mb-3 font-tabular tracking-tight">
+                  <p className="text-white text-2xl md:text-4xl font-black mb-2 md:mb-3 font-tabular tracking-tight">
                     {value.toFixed(2)}
                   </p>
                   <div className="flex items-center gap-2">

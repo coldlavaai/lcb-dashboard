@@ -84,7 +84,7 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
 
       <div className="space-y-6 relative z-10">
         {/* Volatility Range Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 mobile-card-grid">
           {volatilityMetrics.map((metric, index) => {
             const Icon = metric.icon;
             return (
@@ -93,7 +93,7 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="relative overflow-hidden rounded-xl p-6 backdrop-blur-md border-2"
+                className="relative overflow-hidden rounded-xl p-3 md:p-6 backdrop-blur-md border-2"
                 style={{
                   backgroundColor: getIntensityColor(metric.value),
                   borderColor: `${metric.color}60`,
@@ -105,10 +105,10 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
                     <span className="text-white/60 text-xs font-medium">{metric.label}</span>
                   </div>
                 </div>
-                <div className="text-white text-3xl font-black font-tabular">
+                <div className="text-white text-xl md:text-3xl font-black font-tabular">
                   {metric.value.toFixed(2)}¢
                 </div>
-                <div className="mt-2 text-white/50 text-xs" title={metric.description}>
+                <div className="mt-1 md:mt-2 text-white/50 text-[10px] md:text-xs line-clamp-2" title={metric.description}>
                   {metric.description}
                 </div>
               </motion.div>

@@ -208,16 +208,21 @@ html {
     max-width: 100% !important;
   }
 
-  /* Grid layouts - Always single column on mobile */
-  .grid-cols-1,
-  .grid-cols-2,
-  [class*="grid-cols-"]:not(.mobile-nav-grid) {
+  /* Grid layouts - Default single column on mobile except special cases */
+  .grid-cols-1:not(.mobile-nav-grid):not(.mobile-card-grid),
+  .grid-cols-2:not(.mobile-nav-grid):not(.mobile-card-grid),
+  [class*="grid-cols-"]:not(.mobile-nav-grid):not(.mobile-card-grid):not([class*="sm:grid-cols"]) {
     grid-template-columns: 1fr !important;
   }
 
   /* Bottom navigation must stay horizontal */
-  .mobile-nav-grid {
+  .mobile-nav-grid.grid-cols-4 {
     grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  /* Card grids use 2 columns on mobile for better space usage */
+  .mobile-card-grid {
+    /* Let the component's responsive classes handle it */
   }
 
   /* Exception: Small stat cards can be 2 columns */
