@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Download, Bell, Settings, ChevronDown, LayoutGrid } from 'lucide-react';
+import { Download, Bell, Settings, ChevronDown, LayoutGrid, Edit3, Save } from 'lucide-react';
+import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 // Import components
 import HeatMap from '../components/HeatMap';
@@ -16,6 +18,18 @@ import LiveTicker from '../components/LiveTicker';
 import CustomDatePicker from '../components/CustomDatePicker';
 import ComparisonSelector, { ComparisonMode } from '../components/ComparisonSelector';
 import SettingsModal from '../components/SettingsModal';
+import DraggableSection from '../components/DraggableSection';
+import CommentSection from '../components/CommentSection';
+
+// Import utilities
+import {
+  LayoutConfig,
+  loadLayout,
+  saveLayout,
+  updateSectionOrder,
+  toggleSection,
+  DEFAULT_LAYOUT,
+} from '../utils/layoutUtils';
 
 // Import data
 import cottonData from '../data/cotton_data.json';
@@ -35,6 +49,13 @@ export default function Dashboard() {
   const [useCustomRange, setUseCustomRange] = useState(false);
   const [comparisonMode, setComparisonMode] = useState<ComparisonMode>('latest');
   const [showSettings, setShowSettings] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [layout, setLayout] = useState<LayoutConfig>(DEFAULT_LAYOUT);
+
+  // Load layout on mount
+  useEffect(() => {
+    setLayout(loadLayout());
+  }, []);
 
   const getFilteredData = () => {
     // No filtering needed - all data is valid
@@ -64,6 +85,37 @@ export default function Dashboard() {
     setUseCustomRange(true);
     // Reset preset time range visual state
     setTimeRange('30d'); // Keep a default selected
+  };
+
+  // Handle drag end for section reordering
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const view = viewMode as keyof LayoutConfig;
+      const sections = layout[view];
+      const oldIndex = sections.findIndex(s => s.id === active.id);
+      const newIndex = sections.findIndex(s => s.id === over.id);
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newLayout = updateSectionOrder(layout, view, oldIndex, newIndex);
+        setLayout(newLayout);
+        saveLayout(newLayout);
+      }
+    }
+  };
+
+  // Handle save and exit edit mode
+  const handleSaveLayout = () => {
+    saveLayout(layout);
+    setIsEditMode(false);
+  };
+
+  // Handle toggle section visibility
+  const handleToggleSection = (sectionId: string) => {
+    const view = viewMode as keyof LayoutConfig;
+    const newLayout = toggleSection(layout, view, sectionId);
+    setLayout(newLayout);
   };
 
   const filteredData = getFilteredData();
@@ -185,6 +237,29 @@ export default function Dashboard() {
                 className="p-2.5 bg-[#0F1419]/80 hover:bg-[#2C7A7B]/20 text-white/70 hover:text-[#2C7A7B] rounded-xl transition-all border border-white/10 hover:border-[#2C7A7B]/40"
               >
                 <Bell size={18} />
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => isEditMode ? handleSaveLayout() : setIsEditMode(true)}
+                className={`px-4 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all ${
+                  isEditMode
+                    ? 'bg-gradient-to-r from-[#2C7A7B] to-[#3B9B9B] text-white shadow-lg'
+                    : 'bg-[#0F1419]/80 text-white/70 hover:text-white border border-white/10 hover:border-white/30'
+                }`}
+              >
+                {isEditMode ? (
+                  <>
+                    <Save size={16} />
+                    Save Layout
+                  </>
+                ) : (
+                  <>
+                    <Edit3 size={16} />
+                    Edit
+                  </>
+                )}
               </motion.button>
 
               <motion.button
