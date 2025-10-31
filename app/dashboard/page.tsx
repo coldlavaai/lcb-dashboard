@@ -88,70 +88,76 @@ export default function Dashboard() {
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className="bg-gradient-to-r from-[#1A2332]/95 via-[#2C3E50]/95 to-[#1A2332]/95 backdrop-blur-xl border-b border-[#D4AF37]/20 sticky top-0 z-50 shadow-2xl"
+        className="bg-gradient-to-r from-[#0D1B2A]/98 via-[#1B263B]/98 to-[#0D1B2A]/98 backdrop-blur-2xl border-b-2 border-[#D4AF37]/30 sticky top-0 z-50 shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]"
       >
-        <div className="max-w-[2000px] mx-auto px-8 py-5">
-          <div className="flex items-center justify-between">
+        <div className="max-w-[2000px] mx-auto px-8 py-3">
+          <div className="flex items-center justify-between gap-6">
             {/* Logo & Title */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-4"
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
               <Image
                 src="/lcb-logo.png"
                 alt="Liverpool Cotton Brokers"
-                width={200}
-                height={50}
-                className="h-12 w-auto"
+                width={180}
+                height={45}
+                className="h-10 w-auto drop-shadow-lg"
                 priority
               />
-              <div className="border-l border-[#D4AF37]/30 pl-4">
-                <p className="text-white/70 text-sm">Professional Market Intelligence • 20 Years of Data</p>
+              <div className="border-l-2 border-[#D4AF37]/50 pl-4 hidden lg:block">
+                <p className="text-white/80 text-xs font-medium tracking-wide">Professional Market Intelligence • 20 Years of Data</p>
               </div>
             </motion.div>
 
             {/* Controls */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 flex-wrap justify-end">
               {/* View Mode */}
-              <div className="flex bg-[#0F1419] rounded-xl p-1 border border-white/10">
+              <div className="flex bg-[#0F1419]/80 rounded-xl p-1 border border-white/10 backdrop-blur-sm">
                 {([
                   { id: 'overview', label: 'Overview' },
                   { id: 'spreads', label: 'Spreads' },
                   { id: 'markets', label: 'Markets' },
                   { id: 'data', label: 'Data' },
                 ] as { id: ViewMode; label: string }[]).map((mode) => (
-                  <button
+                  <motion.button
                     key={mode.id}
                     onClick={() => setViewMode(mode.id)}
-                    className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
                       viewMode === mode.id
-                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#F4C430] text-[#1A2332] shadow-lg'
-                        : 'text-white/60 hover:text-white hover:bg-white/5'
+                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#F4C430] text-[#1A2332] shadow-lg shadow-[#D4AF37]/30'
+                        : 'text-white/70 hover:text-white hover:bg-white/10'
                     }`}
                   >
                     {mode.label}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
 
               {/* Time Range */}
-              <div className="flex bg-[#0F1419] rounded-xl p-1 border border-white/10">
+              <div className="flex bg-[#0F1419]/80 rounded-xl p-1 border border-white/10 backdrop-blur-sm">
                 {(['7d', '30d', '90d', '1y', 'all'] as TimeRange[]).map((range) => (
-                  <button
+                  <motion.button
                     key={range}
                     onClick={() => {
                       setTimeRange(range);
                       setUseCustomRange(false);
                     }}
-                    className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-all ${
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-3 py-2 rounded-lg text-xs font-bold uppercase transition-all ${
                       timeRange === range && !useCustomRange
-                        ? 'bg-[#2C7A7B] text-white shadow-lg'
-                        : 'text-white/60 hover:text-white hover:bg-white/5'
+                        ? 'bg-[#2C7A7B] text-white shadow-lg shadow-[#2C7A7B]/40'
+                        : 'text-white/70 hover:text-white hover:bg-white/10'
                     }`}
                   >
                     {range}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
 
@@ -160,21 +166,29 @@ export default function Dashboard() {
 
               {/* Action Buttons */}
               <motion.button
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-5 py-2.5 bg-gradient-to-r from-[#2C7A7B] to-[#3B9B9B] text-white rounded-xl font-semibold text-sm flex items-center gap-2 shadow-lg hover:shadow-xl transition-shadow"
+                className="px-5 py-2.5 bg-gradient-to-r from-[#2C7A7B] to-[#3B9B9B] text-white rounded-xl font-semibold text-sm flex items-center gap-2 shadow-lg hover:shadow-[0_8px_24px_rgba(44,122,123,0.4)] transition-all"
               >
                 <Download size={16} />
                 Export PDF
               </motion.button>
 
-              <button className="p-2.5 bg-[#0F1419] hover:bg-white/5 text-white/60 hover:text-white rounded-xl transition-all border border-white/10">
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: 15 }}
+                whileTap={{ scale: 0.9 }}
+                className="p-2.5 bg-[#0F1419]/80 hover:bg-[#2C7A7B]/20 text-white/70 hover:text-[#2C7A7B] rounded-xl transition-all border border-white/10 hover:border-[#2C7A7B]/40"
+              >
                 <Bell size={18} />
-              </button>
+              </motion.button>
 
-              <button className="p-2.5 bg-[#0F1419] hover:bg-white/5 text-white/60 hover:text-white rounded-xl transition-all border border-white/10">
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+                className="p-2.5 bg-[#0F1419]/80 hover:bg-white/10 text-white/70 hover:text-white rounded-xl transition-all border border-white/10 hover:border-white/30"
+              >
                 <Settings size={18} />
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>

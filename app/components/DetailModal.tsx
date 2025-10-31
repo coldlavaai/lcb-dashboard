@@ -79,7 +79,7 @@ export default function DetailModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/70 backdrop-blur-md z-[100]"
           />
 
           {/* Modal */}
@@ -87,7 +87,7 @@ export default function DetailModal({
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+            className="fixed inset-0 z-[101] flex items-center justify-center p-6 pointer-events-none"
           >
             <div
               className="bg-gradient-to-br from-[#1A2332]/95 via-[#1A2332]/90 to-[#2C3E50]/95 backdrop-blur-xl border border-[#D4AF37]/30 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto pointer-events-auto"
@@ -106,9 +106,10 @@ export default function DetailModal({
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                  className="p-3 hover:bg-red-500/20 rounded-xl transition-all z-20 border border-white/10 hover:border-red-500/40"
+                  title="Close (Esc)"
                 >
-                  <X size={24} className="text-white/70 hover:text-white" />
+                  <X size={24} className="text-white hover:text-red-400 transition-colors" />
                 </button>
               </div>
 
