@@ -74,3 +74,45 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+/* Light Theme */
+.light-theme {
+  --background: #F8F9FA;
+  --foreground: #1A1A1A;
+}
+
+.light-theme body {
+  background: #F8F9FA;
+  color: #1A1A1A;
+}
+
+.light-theme ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.light-theme ::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.4);
+}
+
+.light-theme ::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.6);
+}
+
+.light-theme .glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Compact Mode */
+.compact-mode {
+  font-size: 14px;
+}
+
+.compact-mode .card {
+  padding: 0.75rem;
+}
+
+.compact-mode .stat-card {
+  padding: 1rem;
+}

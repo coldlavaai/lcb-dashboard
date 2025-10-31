@@ -5,65 +5,40 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Settings, Moon, Sun, Bell, Database, Layout, Sliders } from 'lucide-react';
 import theme from '@/lib/theme';
+import { useSettings, UserSettings } from '../context/SettingsContext';
 
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface UserSettings {
-  theme: 'dark' | 'light';
-  notifications: boolean;
-  defaultComparisonMode: 'latest' | 'week' | 'month' | 'year';
-  defaultTimeRange: '7d' | '30d' | '90d' | '1y' | 'all';
-  autoRefresh: boolean;
-  refreshInterval: number; // in minutes
-  showVolatilityAlerts: boolean;
-  compactMode: boolean;
-}
-
-const DEFAULT_SETTINGS: UserSettings = {
-  theme: 'dark',
-  notifications: true,
-  defaultComparisonMode: 'latest',
-  defaultTimeRange: '30d',
-  autoRefresh: false,
-  refreshInterval: 5,
-  showVolatilityAlerts: true,
-  compactMode: false,
-};
-
 export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
-  const [mounted, setMounted] = useState(false);
-  const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
+  const { settings, updateSettings, resetSettings } = useSettings();
+  const [localSettings, setLocalSettings] = useState<UserSettings>(settings);
   const [hasChanges, setHasChanges] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Load settings from localStorage
-    const savedSettings = localStorage.getItem('lcb-settings');
-    if (savedSettings) {
-      setSettings(JSON.parse(savedSettings));
-    }
   }, []);
 
   const handleSave = () => {
-    localStorage.setItem('lcb-settings', JSON.stringify(settings));
+    updateSettings(localSettings);
     setHasChanges(false);
     onClose();
   };
 
   const handleReset = () => {
-    setSettings(DEFAULT_SETTINGS);
-    setHasChanges(true);
+    resetSettings();
+    setLocalSettings(settings);
+    setHasChanges(false);
+    onClose();
   };
 
   const updateSetting = <K extends keyof UserSettings>(key: K, value: UserSettings[K]) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+    setLocalSettings(prev => ({ ...prev, [key]: value }));
     setHasChanges(true);
   };
-
-  if (!mounted) return null;
 
   const modalContent = (
     <AnimatePresence>
@@ -113,7 +88,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       {/* Theme Toggle */}
                       <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
                         <div className="flex items-center gap-3">
-                          {settings.theme === 'dark' ? <Moon size={18} className="text-blue-400" /> : <Sun size={18} className="text-yellow-400" />}
+                          {localSettings.theme === 'dark' ? <Moon size={18} className="text-blue-400" /> : <Sun size={18} className="text-yellow-400" />}
                           <div>
                             <p className="text-white font-semibold">Theme</p>
                             <p className="text-white/60 text-sm">Choose your preferred color scheme</p>
@@ -123,7 +98,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           <button
                             onClick={() => updateSetting('theme', 'dark')}
                             className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
-                              settings.theme === 'dark'
+                              localSettings.theme === 'dark'
                                 ? 'bg-[#D4AF37] text-[#1A2332]'
                                 : 'bg-white/10 text-white/70 hover:bg-white/20'
                             }`}
@@ -133,7 +108,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           <button
                             onClick={() => updateSetting('theme', 'light')}
                             className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
-                              settings.theme === 'light'
+                              localSettings.theme === 'light'
                                 ? 'bg-[#D4AF37] text-[#1A2332]'
                                 : 'bg-white/10 text-white/70 hover:bg-white/20'
                             }`}
@@ -150,13 +125,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           <p className="text-white/60 text-sm">Reduce spacing and padding for more data density</p>
                         </div>
                         <button
-                          onClick={() => updateSetting('compactMode', !settings.compactMode)}
+                          onClick={() => updateSetting('compactMode', !localSettings.compactMode)}
                           className={`relative w-14 h-7 rounded-full transition-colors ${
-                            settings.compactMode ? 'bg-[#D4AF37]' : 'bg-white/20'
+                            localSettings.compactMode ? 'bg-[#D4AF37]' : 'bg-white/20'
                           }`}
                         >
                           <div className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform ${
-                            settings.compactMode ? 'translate-x-7' : 'translate-x-0'
+                            localSettings.compactMode ? 'translate-x-7' : 'translate-x-0'
                           }`} />
                         </button>
                       </div>
@@ -179,7 +154,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                               key={mode}
                               onClick={() => updateSetting('defaultComparisonMode', mode)}
                               className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
-                                settings.defaultComparisonMode === mode
+                                localSettings.defaultComparisonMode === mode
                                   ? 'bg-[#D4AF37] text-[#1A2332]'
                                   : 'bg-white/10 text-white/70 hover:bg-white/20'
                               }`}
@@ -199,7 +174,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                               key={range}
                               onClick={() => updateSetting('defaultTimeRange', range)}
                               className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
-                                settings.defaultTimeRange === range
+                                localSettings.defaultTimeRange === range
                                   ? 'bg-[#D4AF37] text-[#1A2332]'
                                   : 'bg-white/10 text-white/70 hover:bg-white/20'
                               }`}
@@ -226,13 +201,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           <p className="text-white/60 text-sm">Receive alerts for market movements</p>
                         </div>
                         <button
-                          onClick={() => updateSetting('notifications', !settings.notifications)}
+                          onClick={() => updateSetting('notifications', !localSettings.notifications)}
                           className={`relative w-14 h-7 rounded-full transition-colors ${
-                            settings.notifications ? 'bg-[#D4AF37]' : 'bg-white/20'
+                            localSettings.notifications ? 'bg-[#D4AF37]' : 'bg-white/20'
                           }`}
                         >
                           <div className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform ${
-                            settings.notifications ? 'translate-x-7' : 'translate-x-0'
+                            localSettings.notifications ? 'translate-x-7' : 'translate-x-0'
                           }`} />
                         </button>
                       </div>
@@ -244,13 +219,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           <p className="text-white/60 text-sm">Get notified of significant price movements</p>
                         </div>
                         <button
-                          onClick={() => updateSetting('showVolatilityAlerts', !settings.showVolatilityAlerts)}
+                          onClick={() => updateSetting('showVolatilityAlerts', !localSettings.showVolatilityAlerts)}
                           className={`relative w-14 h-7 rounded-full transition-colors ${
-                            settings.showVolatilityAlerts ? 'bg-[#D4AF37]' : 'bg-white/20'
+                            localSettings.showVolatilityAlerts ? 'bg-[#D4AF37]' : 'bg-white/20'
                           }`}
                         >
                           <div className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform ${
-                            settings.showVolatilityAlerts ? 'translate-x-7' : 'translate-x-0'
+                            localSettings.showVolatilityAlerts ? 'translate-x-7' : 'translate-x-0'
                           }`} />
                         </button>
                       </div>
@@ -263,24 +238,24 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             <p className="text-white/60 text-sm">Automatically update dashboard data</p>
                           </div>
                           <button
-                            onClick={() => updateSetting('autoRefresh', !settings.autoRefresh)}
+                            onClick={() => updateSetting('autoRefresh', !localSettings.autoRefresh)}
                             className={`relative w-14 h-7 rounded-full transition-colors ${
-                              settings.autoRefresh ? 'bg-[#D4AF37]' : 'bg-white/20'
+                              localSettings.autoRefresh ? 'bg-[#D4AF37]' : 'bg-white/20'
                             }`}
                           >
                             <div className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform ${
-                              settings.autoRefresh ? 'translate-x-7' : 'translate-x-0'
+                              localSettings.autoRefresh ? 'translate-x-7' : 'translate-x-0'
                             }`} />
                           </button>
                         </div>
-                        {settings.autoRefresh && (
+                        {localSettings.autoRefresh && (
                           <div>
                             <label className="text-white/70 text-sm mb-2 block">Refresh Interval (minutes)</label>
                             <input
                               type="number"
                               min="1"
                               max="60"
-                              value={settings.refreshInterval}
+                              value={localSettings.refreshInterval}
                               onChange={(e) => updateSetting('refreshInterval', parseInt(e.target.value) || 5)}
                               className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:border-[#D4AF37] transition-colors"
                             />
@@ -326,6 +301,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       )}
     </AnimatePresence>
   );
+
+  if (!mounted) return null;
 
   return createPortal(modalContent, document.body);
 }
