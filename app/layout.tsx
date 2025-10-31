@@ -22,6 +22,13 @@ export const metadata: Metadata = {
   title: "LCB Dashboard - Liverpool Cotton Brokers Market Intelligence",
   description: "Professional cotton market data visualization and analysis platform. Track ICE, CZCE, MCX, AWP, and global cotton price spreads with advanced analytics.",
   keywords: ["cotton", "commodities", "trading", "market data", "Liverpool Cotton Brokers", "ICE futures", "CZCE", "MCX"],
+  icons: {
+    icon: [
+      { url: '/icon.png', sizes: '192x192', type: 'image/png' },
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' }
+    ],
+    apple: { url: '/icon.png', sizes: '192x192', type: 'image/png' },
+  },
 };
 
 export default function RootLayout({
