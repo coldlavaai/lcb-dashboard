@@ -14,6 +14,10 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
   const [activeTab, setActiveTab] = useState<TabCategory>('prices');
   const [sortKey, setSortKey] = useState<string>('Column_0');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [rowsToShow, setRowsToShow] = useState(100);
+  const [showDateRange, setShowDateRange] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   // Column categories
   const columnCategories = {
@@ -107,9 +111,33 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
   };
 
   const sortedData = useMemo(() => {
-    let sorted = [...data].slice(0, 100); // Show recent 100 rows
+    let filtered = [...data];
 
-    sorted.sort((a, b) => {
+    // Apply date range filter if enabled
+    if (showDateRange && (startDate || endDate)) {
+      filtered = filtered.filter(row => {
+        const rowDate = new Date(row['Column_0']);
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+
+        if (start && end) {
+          return rowDate >= start && rowDate <= end;
+        } else if (start) {
+          return rowDate >= start;
+        } else if (end) {
+          return rowDate <= end;
+        }
+        return true;
+      });
+    }
+
+    // Limit rows if not showing all
+    if (!showDateRange) {
+      filtered = filtered.slice(0, rowsToShow);
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
       let aVal = a[sortKey];
       let bVal = b[sortKey];
 
@@ -125,8 +153,8 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
       return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
     });
 
-    return sorted;
-  }, [data, sortKey, sortDirection]);
+    return filtered;
+  }, [data, sortKey, sortDirection, rowsToShow, showDateRange, startDate, endDate]);
 
   const handleSort = (key: string) => {
     if (sortKey === key) {
@@ -170,16 +198,74 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
       {/* Header with Tabs */}
       <div className="border-b border-white/10 bg-gradient-to-r from-[#1A2332]/95 to-[#2C3E50]/95 backdrop-blur-xl">
         <div className="p-6 pb-0">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
             <h3 className="text-2xl font-bold text-[#D4AF37]">Complete Market Data</h3>
-            <button
-              onClick={exportToCSV}
-              className="px-4 py-2 bg-gradient-to-r from-[#2C7A7B] to-[#3B9B9B] text-white rounded-lg font-semibold text-sm flex items-center gap-2 hover:from-[#3B9B9B] hover:to-[#2C7A7B] transition-all shadow-lg"
-            >
-              <Download size={16} />
-              Export CSV
-            </button>
+            <div className="flex items-center gap-3 flex-wrap">
+              {/* Date Range Toggle */}
+              <button
+                onClick={() => setShowDateRange(!showDateRange)}
+                className={`px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 transition-all shadow-lg ${
+                  showDateRange
+                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#F4C430] text-[#1A2332]'
+                    : 'bg-white/10 text-white hover:bg-white/20'
+                }`}
+              >
+                📅 {showDateRange ? 'Custom Range' : 'View Range'}
+              </button>
+
+              {/* Export Button */}
+              <button
+                onClick={exportToCSV}
+                className="px-4 py-2 bg-gradient-to-r from-[#2C7A7B] to-[#3B9B9B] text-white rounded-lg font-semibold text-sm flex items-center gap-2 hover:from-[#3B9B9B] hover:to-[#2C7A7B] transition-all shadow-lg"
+              >
+                <Download size={16} />
+                Export CSV
+              </button>
+            </div>
           </div>
+
+          {/* Date Range Selector */}
+          {showDateRange && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-4 p-4 bg-white/5 rounded-xl border border-white/10"
+            >
+              <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <label className="text-white/70 text-sm font-semibold">From:</label>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="px-3 py-2 bg-[#0F1419]/50 border border-white/20 rounded-lg text-white text-sm focus:border-[#D4AF37] focus:outline-none"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <label className="text-white/70 text-sm font-semibold">To:</label>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="px-3 py-2 bg-[#0F1419]/50 border border-white/20 rounded-lg text-white text-sm focus:border-[#D4AF37] focus:outline-none"
+                  />
+                </div>
+                <button
+                  onClick={() => {
+                    setStartDate('');
+                    setEndDate('');
+                  }}
+                  className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg text-sm font-semibold transition-all"
+                >
+                  Clear
+                </button>
+                <div className="text-white/50 text-sm">
+                  <span className="font-semibold">Available:</span> {data.length > 0 ? new Date(data[data.length - 1]['Column_0']).getFullYear() : '?'} - {data.length > 0 ? new Date(data[0]['Column_0']).getFullYear() : '?'}
+                </div>
+              </div>
+            </motion.div>
+          )}
 
           {/* Tabs */}
           <div className="flex gap-2 overflow-x-auto pb-2">
@@ -309,11 +395,33 @@ export default function CompleteDataTable({ data }: CompleteDataTableProps) {
 
       {/* Footer Info */}
       <div className="border-t border-white/10 p-4 bg-[#0F1419]/30 backdrop-blur-sm">
-        <div className="flex items-center justify-between text-white/60 text-xs">
-          <span>Showing {sortedData.length} of {data.length} trading days</span>
-          <span>
-            Category: {currentCategory.label} • {currentCategory.columns.length - 1} columns
-          </span>
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-4">
+            <span className="text-white/60 text-xs">
+              Showing {sortedData.length} of {data.length} trading days
+            </span>
+            <span className="text-white/60 text-xs">
+              Category: {currentCategory.label} • {currentCategory.columns.length - 1} columns
+            </span>
+          </div>
+
+          {/* Load More Button */}
+          {!showDateRange && sortedData.length < data.length && (
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setRowsToShow(prev => prev + 100)}
+                className="px-4 py-2 bg-gradient-to-r from-[#D4AF37] to-[#F4C430] text-[#1A2332] rounded-lg font-semibold text-sm hover:from-[#F4C430] hover:to-[#D4AF37] transition-all shadow-lg"
+              >
+                Load 100 More
+              </button>
+              <button
+                onClick={() => setRowsToShow(data.length)}
+                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg font-semibold text-sm transition-all"
+              >
+                Load All ({data.length - rowsToShow} remaining)
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
