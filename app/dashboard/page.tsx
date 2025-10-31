@@ -56,6 +56,7 @@ export default function Dashboard() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [layout, setLayout] = useState<LayoutConfig>(DEFAULT_LAYOUT);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   // Section-specific comparison modes (null means use global)
   const [sectionComparisonModes, setSectionComparisonModes] = useState<Record<string, ComparisonMode | null>>({
@@ -68,6 +69,14 @@ export default function Dashboard() {
   useEffect(() => {
     setLayout(loadLayout());
   }, []);
+
+  // Update current time on mount
+  useEffect(() => {
+    setCurrentTime(new Date());
+  }, []);
+
+  // Get the latest data date (most recent date in the dataset)
+  const latestDataDate = cottonData && cottonData.length > 0 ? new Date(cottonData[0].Date) : new Date();
 
   const getFilteredData = () => {
     // No filtering needed - all data is valid
@@ -155,6 +164,7 @@ export default function Dashboard() {
     <div className="min-h-screen pb-20 md:pb-0" style={{ background: 'linear-gradient(to bottom right, #0A0B0D, #13151A, #1C1F26)' }}>
       {/* Mobile Header */}
       <MobileHeader
+        dataDate={latestDataDate}
         mobileMenuButton={
           <MobileMenu
             timeRange={timeRange}
@@ -197,6 +207,14 @@ export default function Dashboard() {
               <div className="border-l-2 border-[#D4AF37]/50 pl-5 hidden lg:block">
                 <p className="text-white/90 text-sm font-semibold tracking-wide">Professional Market Intelligence</p>
                 <p className="text-[#D4AF37]/80 text-xs font-medium tracking-wide mt-0.5">20 Years of Data</p>
+              </div>
+              <div className="border-l-2 border-[#D4AF37]/30 pl-5 hidden xl:block">
+                <p className="text-white/60 text-[10px] font-medium tracking-wide">
+                  Last Refreshed: {currentTime.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                </p>
+                <p className="text-white/60 text-[10px] font-medium tracking-wide mt-0.5">
+                  Data as of: {latestDataDate.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                </p>
               </div>
             </motion.div>
 
