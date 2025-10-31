@@ -208,26 +208,13 @@ html {
     max-width: 100% !important;
   }
 
-  /* Grid layouts - Default single column on mobile except special cases */
-  .grid-cols-1:not(.mobile-nav-grid):not(.mobile-card-grid),
-  .grid-cols-2:not(.mobile-nav-grid):not(.mobile-card-grid),
-  [class*="grid-cols-"]:not(.mobile-nav-grid):not(.mobile-card-grid):not([class*="sm:grid-cols"]) {
+  /* Only override grids that should definitely be single column on mobile */
+  /* Most card grids and responsive layouts should use their own breakpoints */
+
+  /* Main content grids that need single column */
+  .space-y-12 > .grid:not(.mobile-card-grid):not(.mobile-nav-grid),
+  .space-y-10 > .grid:not(.mobile-card-grid):not(.mobile-nav-grid) {
     grid-template-columns: 1fr !important;
-  }
-
-  /* Bottom navigation must stay horizontal */
-  .mobile-nav-grid.grid-cols-4 {
-    grid-template-columns: repeat(4, 1fr) !important;
-  }
-
-  /* Card grids use 2 columns on mobile for better space usage */
-  .mobile-card-grid {
-    /* Let the component's responsive classes handle it */
-  }
-
-  /* Exception: Small stat cards can be 2 columns */
-  .grid.stat-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
   }
 
   /* Compact spacing between sections */

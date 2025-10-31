@@ -83,7 +83,7 @@ export default function HeatMap({
           />
         )}
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 md:gap-6 relative z-10 mobile-card-grid">
+      <div className="grid grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-4 md:gap-6 relative z-10 mobile-card-grid">
         {spreads.map((spread, index) => {
           const change = getChangeValue(spread);
           const value = parseFloat(latestData[spread]) || 0;
