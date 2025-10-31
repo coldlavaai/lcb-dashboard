@@ -54,12 +54,12 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
   };
 
   return (
-    <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-8 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none overflow-hidden group">
-      <h3 className="text-2xl font-bold text-[#D4AF37] mb-8 relative z-10 flex items-center gap-3">
+    <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none overflow-hidden group">
+      <h3 className="text-2xl font-bold text-[#D4AF37] mb-10 relative z-10 flex items-center gap-3">
         <span className="h-1 w-12 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
         {title}
       </h3>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
         {spreads.map((spread, index) => {
           const change = getChangePercentage(spread);
           const value = parseFloat(latestData[spread]) || 0;

@@ -9,6 +9,7 @@ interface CorrelationMatrixProps {
 
 export default function CorrelationMatrix({ data }: CorrelationMatrixProps) {
   const markets = ['ICE', 'CZCE cotton usc/lb', 'MCX usc/lb', 'AWP', 'CEPEA', 'A-Index'];
+  const marketLabels = ['ICE', 'CZCE', 'MCX', 'AWP', 'CEPEA', 'A-Index'];
 
   const correlationData = useMemo(() => {
     // Calculate correlation coefficients between markets
@@ -65,9 +66,12 @@ export default function CorrelationMatrix({ data }: CorrelationMatrixProps) {
   };
 
   return (
-    <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none">
-      <h3 className="text-xl font-bold text-[#D4AF37] mb-4 relative z-10">Market Correlation Matrix</h3>
-      <p className="text-white/60 text-sm mb-4 relative z-10">
+    <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none">
+      <h3 className="text-2xl font-bold text-[#D4AF37] mb-3 relative z-10 flex items-center gap-3">
+        <span className="h-1 w-12 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
+        Market Correlation Matrix
+      </h3>
+      <p className="text-white/60 text-sm mb-8 relative z-10">
         Correlation coefficients between major markets • Last 365 days
       </p>
 
@@ -75,11 +79,11 @@ export default function CorrelationMatrix({ data }: CorrelationMatrixProps) {
         <table className="w-full border-collapse">
           <thead>
             <tr>
-              <th className="p-2 pb-24"></th>
-              {markets.map((market, i) => (
-                <th key={i} className="p-2 pb-24 relative h-32">
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 transform -rotate-45 origin-center text-xs text-white/70 font-medium whitespace-nowrap w-24 text-left">
-                    {market.replace(' usc/lb', '')}
+              <th className="p-3 text-left"></th>
+              {marketLabels.map((label, i) => (
+                <th key={i} className="p-3 text-center">
+                  <div className="text-xs text-[#D4AF37] font-bold uppercase tracking-wider">
+                    {label}
                   </div>
                 </th>
               ))}
@@ -88,20 +92,22 @@ export default function CorrelationMatrix({ data }: CorrelationMatrixProps) {
           <tbody>
             {markets.map((rowMarket, i) => (
               <tr key={i}>
-                <td className="p-2 text-xs text-white/70 font-medium whitespace-nowrap">
-                  {rowMarket.replace(' usc/lb', '')}
+                <td className="p-3 text-left">
+                  <div className="text-xs text-[#D4AF37] font-bold uppercase tracking-wider whitespace-nowrap">
+                    {marketLabels[i]}
+                  </div>
                 </td>
                 {markets.map((colMarket, j) => (
-                  <td key={j} className="p-1">
+                  <td key={j} className="p-2">
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: (i + j) * 0.02 }}
-                      className="w-14 h-14 lg:w-16 lg:h-16 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:scale-110 transition-all backdrop-blur-sm shadow-lg"
+                      className="w-16 h-16 rounded-xl flex items-center justify-center text-white text-sm font-bold cursor-pointer hover:scale-105 transition-all backdrop-blur-sm shadow-lg border border-white/10"
                       style={{
                         backgroundColor: getCorrelationColor(correlationData[i]?.[j] || 0),
                       }}
-                      title={`${rowMarket} vs ${colMarket}: ${(correlationData[i]?.[j] || 0).toFixed(3)}`}
+                      title={`${marketLabels[i]} vs ${marketLabels[j]}: ${(correlationData[i]?.[j] || 0).toFixed(3)}`}
                     >
                       {(correlationData[i]?.[j] || 0).toFixed(2)}
                     </motion.div>

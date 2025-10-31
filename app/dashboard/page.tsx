@@ -89,26 +89,27 @@ export default function Dashboard() {
         animate={{ y: 0 }}
         className="bg-gradient-to-r from-[#0D1B2A]/98 via-[#1B263B]/98 to-[#0D1B2A]/98 backdrop-blur-2xl border-b-2 border-[#D4AF37]/30 sticky top-0 z-50 shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]"
       >
-        <div className="max-w-[2000px] mx-auto px-8 py-3">
+        <div className="max-w-[2000px] mx-auto px-8 py-5">
           <div className="flex items-center justify-between gap-6">
             {/* Logo & Title */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-4"
-              whileHover={{ scale: 1.02 }}
+              className="flex items-center gap-5"
+              whileHover={{ scale: 1.01 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               <Image
                 src="/lcb-logo.png"
                 alt="Liverpool Cotton Brokers"
-                width={180}
-                height={45}
-                className="h-10 w-auto drop-shadow-lg"
+                width={240}
+                height={60}
+                className="h-16 w-auto drop-shadow-2xl"
                 priority
               />
-              <div className="border-l-2 border-[#D4AF37]/50 pl-4 hidden lg:block">
-                <p className="text-white/80 text-xs font-medium tracking-wide">Professional Market Intelligence • 20 Years of Data</p>
+              <div className="border-l-2 border-[#D4AF37]/50 pl-5 hidden lg:block">
+                <p className="text-white/90 text-sm font-semibold tracking-wide">Professional Market Intelligence</p>
+                <p className="text-[#D4AF37]/80 text-xs font-medium tracking-wide mt-0.5">20 Years of Data</p>
               </div>
             </motion.div>
 
@@ -199,17 +200,17 @@ export default function Dashboard() {
       {/* Live Ticker */}
       <LiveTicker data={filteredData} comparisonMode={comparisonMode} />
 
-      <main className="max-w-[2000px] mx-auto px-8 py-10">
+      <main className="max-w-[2000px] mx-auto px-8 py-12">
         {/* Overview Mode */}
         {viewMode === 'overview' && (
           <motion.div
             key="overview"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="space-y-10"
+            className="space-y-12"
           >
             {/* Row 1: Heat Map + Correlation Matrix */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <HeatMap data={filteredData} title="Spread Heat Map" comparisonMode={comparisonMode} />
               <CorrelationMatrix data={filteredData} />
             </div>
