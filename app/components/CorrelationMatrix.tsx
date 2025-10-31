@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
+import theme from '@/lib/theme';
 
 interface CorrelationMatrixProps {
   data: any[];
@@ -51,18 +52,17 @@ export default function CorrelationMatrix({ data }: CorrelationMatrixProps) {
   }, [data, markets]);
 
   const getCorrelationColor = (value: number) => {
-    // Strong positive correlation: blue, strong negative: red, weak: gray
     const absValue = Math.abs(value);
     if (value > 0.7) {
-      return `rgb(34, 197, 94)`; // Strong positive - green
+      return theme.colors.data.profit; // Strong positive
     } else if (value > 0.3) {
-      return `rgba(34, 197, 94, ${absValue})`;
+      return `rgba(16, 185, 129, ${absValue})`; // Medium positive
     } else if (value < -0.7) {
-      return `rgb(239, 68, 68)`; // Strong negative - red
+      return theme.colors.data.loss; // Strong negative
     } else if (value < -0.3) {
-      return `rgba(239, 68, 68, ${absValue})`;
+      return `rgba(239, 68, 68, ${absValue})`; // Medium negative
     }
-    return `rgba(148, 163, 184, 0.3)`; // Weak correlation - gray
+    return `rgba(100, 116, 139, 0.3)`; // Weak correlation
   };
 
   return (
@@ -103,7 +103,7 @@ export default function CorrelationMatrix({ data }: CorrelationMatrixProps) {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: (i + j) * 0.02 }}
-                      className="w-16 h-16 rounded-xl flex items-center justify-center text-white text-sm font-bold cursor-pointer hover:scale-105 transition-all backdrop-blur-sm shadow-lg border border-white/10"
+                      className="w-16 h-16 rounded-xl flex items-center justify-center text-white text-sm font-bold cursor-pointer hover:scale-105 transition-all backdrop-blur-sm shadow-lg border border-white/10 font-tabular"
                       style={{
                         backgroundColor: getCorrelationColor(correlationData[i]?.[j] || 0),
                       }}
@@ -121,11 +121,11 @@ export default function CorrelationMatrix({ data }: CorrelationMatrixProps) {
 
       <div className="mt-4 flex items-center gap-6 text-xs text-white/60 relative z-10">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-green-500"></div>
+          <div className="w-4 h-4 rounded" style={{ backgroundColor: theme.colors.data.profit }}></div>
           <span>Strong Positive (&gt;0.7)</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-red-500"></div>
+          <div className="w-4 h-4 rounded" style={{ backgroundColor: theme.colors.data.loss }}></div>
           <span>Strong Negative (&lt;-0.7)</span>
         </div>
         <div className="flex items-center gap-2">

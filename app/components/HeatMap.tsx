@@ -6,6 +6,7 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 import DetailModal from './DetailModal';
 import { ComparisonMode } from './ComparisonSelector';
 import { getComparisonDataPoint, calculatePercentageChange } from '../utils/comparisonUtils';
+import theme from '@/lib/theme';
 
 interface HeatMapProps {
   data: any[];
@@ -46,11 +47,11 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
   const getHeatColor = (change: number) => {
     const intensity = Math.min(Math.abs(change) * 10, 100);
     if (change > 0) {
-      return `rgba(34, 197, 94, ${intensity / 100})`; // Green
+      return `rgba(16, 185, 129, ${intensity / 100})`; // theme.colors.data.profit
     } else if (change < 0) {
-      return `rgba(239, 68, 68, ${intensity / 100})`; // Red
+      return `rgba(239, 68, 68, ${intensity / 100})`; // theme.colors.data.loss
     }
-    return 'rgba(100, 116, 139, 0.3)'; // Neutral
+    return theme.colors.background.tertiary; // Neutral
   };
 
   return (
@@ -76,26 +77,27 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
               className="relative overflow-hidden rounded-2xl p-6 cursor-pointer group/card backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300"
               style={{
                 backgroundColor: getHeatColor(change),
-                border: `2px solid ${change > 0 ? '#22c55e' : change < 0 ? '#ef4444' : '#64748b'}80`,
+                border: `2px solid ${change > 0 ? theme.colors.data.profit : change < 0 ? theme.colors.data.loss : theme.colors.data.neutral}80`,
               }}
             >
               <div className="relative z-10">
                 <p className="text-white/90 text-sm font-semibold mb-3 line-clamp-2 leading-tight">
                   {spread}
                 </p>
-                <p className="text-white text-3xl font-black mb-2">
+                <p className="text-white text-3xl font-black mb-2 font-tabular">
                   {value.toFixed(2)}
                 </p>
                 <div className="flex items-center gap-2 mt-2">
                   {change > 0 ? (
-                    <TrendingUp size={16} className="text-green-300" />
+                    <TrendingUp size={16} style={{ color: theme.colors.data.profitLight }} />
                   ) : change < 0 ? (
-                    <TrendingDown size={16} className="text-red-300" />
+                    <TrendingDown size={16} style={{ color: theme.colors.data.lossLight }} />
                   ) : null}
                   <span
-                    className={`text-sm font-bold ${
-                      change > 0 ? 'text-green-300' : change < 0 ? 'text-red-300' : 'text-gray-400'
-                    }`}
+                    className="text-sm font-bold font-tabular"
+                    style={{
+                      color: change > 0 ? theme.colors.data.profitLight : change < 0 ? theme.colors.data.lossLight : theme.colors.data.neutral
+                    }}
                   >
                     {change > 0 ? '+' : ''}{change.toFixed(2)}%
                   </span>

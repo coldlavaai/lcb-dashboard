@@ -82,7 +82,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A0E1A] via-[#111827] to-[#1F2937]">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom right, #0A0B0D, #13151A, #1C1F26)' }}>
       {/* Header */}
       <motion.header
         initial={{ y: -100 }}
