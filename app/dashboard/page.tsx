@@ -277,7 +277,11 @@ export default function Dashboard() {
       </motion.header>
 
       {/* Live Ticker */}
-      <LiveTicker data={filteredData} comparisonMode={comparisonMode} />
+      <LiveTicker
+        data={filteredData}
+        comparisonMode={comparisonMode}
+        onComparisonChange={setComparisonMode}
+      />
 
       <main className="max-w-[2000px] mx-auto px-8 py-12">
         {/* Overview Mode */}

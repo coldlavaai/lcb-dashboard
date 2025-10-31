@@ -74,7 +74,8 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
               transition={{ delay: index * 0.08, type: "spring", stiffness: 100 }}
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.98 }}
-              className="relative overflow-hidden rounded-2xl p-8 backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300 min-h-[180px] flex flex-col justify-between"
+              onClick={() => setSelectedSpread(spread)}
+              className="relative overflow-hidden rounded-2xl p-8 backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300 min-h-[180px] flex flex-col justify-between cursor-pointer"
               style={{
                 backgroundColor: getHeatColor(change),
                 border: `2px solid ${change > 0 ? theme.colors.data.profit : change < 0 ? theme.colors.data.loss : theme.colors.data.neutral}80`,
@@ -82,10 +83,7 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
             >
               <div className="relative z-10 flex flex-col h-full justify-between">
                 <div className="mb-4">
-                  <p
-                    onClick={() => setSelectedSpread(spread)}
-                    className="text-white/95 text-base font-bold line-clamp-2 leading-snug tracking-wide cursor-pointer"
-                  >
+                  <p className="text-white/95 text-base font-bold line-clamp-2 leading-snug tracking-wide">
                     {spread}
                   </p>
                 </div>

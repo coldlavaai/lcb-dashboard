@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, AlertCircle, Activity, Info } from 'lucide-react';
+import { TrendingUp, TrendingDown, AlertCircle, Activity, Info, ChevronDown } from 'lucide-react';
 import DetailModal from './DetailModal';
 import { ComparisonMode } from './ComparisonSelector';
 import { getComparisonDataPoint, calculatePercentageChange, calculatePointChange } from '../utils/comparisonUtils';
@@ -22,12 +22,14 @@ interface TickerItem {
 interface LiveTickerProps {
   data: any[];
   comparisonMode?: ComparisonMode;
+  onComparisonChange?: (mode: ComparisonMode) => void;
 }
 
-export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTickerProps) {
+export default function LiveTicker({ data, comparisonMode = 'latest', onComparisonChange }: LiveTickerProps) {
   const [isPaused, setIsPaused] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [showLegend, setShowLegend] = useState(false);
+  const [showComparisonMenu, setShowComparisonMenu] = useState(false);
 
   // Get comparison label
   const getComparisonLabel = () => {
@@ -204,9 +206,49 @@ export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTick
             <span className="text-white/70 text-xs font-semibold uppercase tracking-wide">
               Live Market Data
             </span>
-            <span className="text-white/50 text-[10px] font-medium">
-              {getComparisonLabel()}
-            </span>
+            {onComparisonChange ? (
+              <div className="relative">
+                <button
+                  onClick={() => setShowComparisonMenu(!showComparisonMenu)}
+                  className="text-white/50 text-[10px] font-medium hover:text-[#D4AF37] transition-colors flex items-center gap-1"
+                >
+                  {getComparisonLabel()}
+                  <ChevronDown size={10} />
+                </button>
+                {showComparisonMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute top-full left-0 mt-1 bg-[#1A2332] border border-white/20 rounded-lg shadow-xl z-50 min-w-[150px]"
+                  >
+                    {[
+                      { value: 'latest' as ComparisonMode, label: 'vs Previous Day' },
+                      { value: 'week' as ComparisonMode, label: 'vs Last Week' },
+                      { value: 'month' as ComparisonMode, label: 'vs Last Month' },
+                      { value: 'year' as ComparisonMode, label: 'vs Last Year' },
+                      { value: 'decade' as ComparisonMode, label: 'vs 10 Years Ago' },
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => {
+                          onComparisonChange(option.value);
+                          setShowComparisonMenu(false);
+                        }}
+                        className={`w-full text-left px-3 py-2 text-xs hover:bg-white/10 transition-colors first:rounded-t-lg last:rounded-b-lg ${
+                          comparisonMode === option.value ? 'bg-[#D4AF37]/20 text-[#D4AF37]' : 'text-white/70'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </div>
+            ) : (
+              <span className="text-white/50 text-[10px] font-medium">
+                {getComparisonLabel()}
+              </span>
+            )}
           </div>
           <button
             onClick={() => setShowLegend(!showLegend)}
