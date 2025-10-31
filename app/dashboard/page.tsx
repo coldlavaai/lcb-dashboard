@@ -20,6 +20,8 @@ import ComparisonSelector, { ComparisonMode } from '../components/ComparisonSele
 import SettingsModal from '../components/SettingsModal';
 import DraggableSection from '../components/DraggableSection';
 import CommentSection from '../components/CommentSection';
+import VolatilityDashboard from '../components/VolatilityDashboard';
+import RawMaterialsGrid from '../components/RawMaterialsGrid';
 
 // Import utilities
 import {
@@ -281,57 +283,100 @@ export default function Dashboard() {
       <main className="max-w-[2000px] mx-auto px-8 py-12">
         {/* Overview Mode */}
         {viewMode === 'overview' && (
-          <motion.div
-            key="overview"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="space-y-12"
-          >
-            {/* Row 1: Heat Map + Correlation Matrix */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <HeatMap data={filteredData} title="Spread Heat Map" comparisonMode={comparisonMode} />
-              <CorrelationMatrix data={filteredData} />
-            </div>
+          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <motion.div
+              key="overview"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className={`space-y-12 ${isEditMode ? 'pl-16' : ''}`}
+            >
+              <SortableContext items={layout.overview.map(s => s.id)} strategy={verticalListSortingStrategy}>
+                {layout.overview.map((section) => {
+                  if (!isEditMode && !section.enabled) return null;
 
-            {/* Row 2: Main Chart + Commentary */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
-              <div className="xl:col-span-2">
-                <AdvancedChart
-                  data={filteredData}
-                  spread={selectedSpread}
-                  title={spreads.find(s => s.id === selectedSpread)?.name || 'CZCE-ICE'}
-                  description={spreads.find(s => s.id === selectedSpread)?.description || ''}
-                  color={spreads.find(s => s.id === selectedSpread)?.color || '#D4AF37'}
-                />
-              </div>
-              <div>
-                <CommentaryPanel spread={selectedSpread} />
-              </div>
-            </div>
+                  return (
+                    <DraggableSection
+                      key={section.id}
+                      id={section.id}
+                      isEditMode={isEditMode}
+                      isEnabled={section.enabled}
+                      onToggleVisibility={() => handleToggleSection(section.id)}
+                    >
+                      {section.id === 'heatmap-volatility' && (
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                          <div className="relative">
+                            <HeatMap data={filteredData} title="Spread Heat Map" comparisonMode={comparisonMode} />
+                            <div className="absolute top-4 right-4 z-20">
+                              <CommentSection sectionId="heatmap" sectionTitle="Spread Heat Map" />
+                            </div>
+                          </div>
+                          <div className="relative">
+                            <VolatilityDashboard data={filteredData} />
+                            <div className="absolute top-4 right-4 z-20">
+                              <CommentSection sectionId="volatility" sectionTitle="Market Volatility" />
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
-            {/* Row 3: Secondary Charts */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <AdvancedChart
-                data={filteredData}
-                spread="AWP - ICE"
-                title="AWP-ICE"
-                description="Adjusted World Price vs US Futures"
-                color="#F4C430"
-              />
-              {hasMCXData && (
-                <AdvancedChart
-                  data={filteredData}
-                  spread="MCX - ICE"
-                  title="MCX-ICE"
-                  description="India vs US Cotton Futures"
-                  color="#2C7A7B"
-                />
-              )}
-            </div>
+                      {section.id === 'main-chart' && (
+                        <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
+                          <div className="xl:col-span-2 relative">
+                            <AdvancedChart
+                              data={filteredData}
+                              spread={selectedSpread}
+                              title={spreads.find(s => s.id === selectedSpread)?.name || 'CZCE-ICE'}
+                              description={spreads.find(s => s.id === selectedSpread)?.description || ''}
+                              color={spreads.find(s => s.id === selectedSpread)?.color || '#D4AF37'}
+                            />
+                            <div className="absolute top-4 right-4 z-20">
+                              <CommentSection sectionId="main-chart" sectionTitle="Main Chart" />
+                            </div>
+                          </div>
+                          <div>
+                            <CommentaryPanel spread={selectedSpread} />
+                          </div>
+                        </div>
+                      )}
 
-            {/* Row 4: Data Table */}
-            <MarketDataTable data={filteredData} />
-          </motion.div>
+                      {section.id === 'secondary-charts' && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
+                          <AdvancedChart
+                            data={filteredData}
+                            spread="AWP - ICE"
+                            title="AWP-ICE"
+                            description="Adjusted World Price vs US Futures"
+                            color="#F4C430"
+                          />
+                          {hasMCXData && (
+                            <AdvancedChart
+                              data={filteredData}
+                              spread="MCX - ICE"
+                              title="MCX-ICE"
+                              description="India vs US Cotton Futures"
+                              color="#2C7A7B"
+                            />
+                          )}
+                          <div className="absolute top-4 right-4 z-20">
+                            <CommentSection sectionId="secondary-charts" sectionTitle="Secondary Charts" />
+                          </div>
+                        </div>
+                      )}
+
+                      {section.id === 'data-table' && (
+                        <div className="relative">
+                          <MarketDataTable data={filteredData} />
+                          <div className="absolute top-4 right-4 z-20">
+                            <CommentSection sectionId="data-table" sectionTitle="Market Data Table" />
+                          </div>
+                        </div>
+                      )}
+                    </DraggableSection>
+                  );
+                })}
+              </SortableContext>
+            </motion.div>
+          </DndContext>
         )}
 
         {/* Spreads Mode */}

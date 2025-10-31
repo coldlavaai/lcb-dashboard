@@ -83,9 +83,9 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] w-full max-w-3xl max-h-[85vh] overflow-hidden"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col"
           >
-            <div className="bg-gradient-to-br from-[#1A2332] via-[#2C3E50] to-[#1A2332] rounded-2xl shadow-2xl border-2 border-[#D4AF37]/30 flex flex-col">
+            <div className="bg-gradient-to-br from-[#1A2332] via-[#2C3E50] to-[#1A2332] rounded-2xl shadow-2xl border-2 border-[#D4AF37]/30 flex flex-col max-h-[90vh]">
               {/* Header */}
               <div className="px-8 py-6 border-b border-white/10 flex items-center justify-between bg-gradient-to-r from-[#D4AF37]/10 to-transparent">
                 <div className="flex items-center gap-3">
@@ -101,7 +101,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               </div>
 
               {/* Content */}
-              <div className="p-8 overflow-y-auto flex-1">
+              <div className="p-8 overflow-y-auto flex-1 max-h-[calc(90vh-180px)]">
                 <div className="space-y-8">
                   {/* Display Section */}
                   <section>
@@ -293,7 +293,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               </div>
 
               {/* Footer */}
-              <div className="px-8 py-5 border-t border-white/10 flex items-center justify-between bg-gradient-to-r from-transparent to-[#D4AF37]/5">
+              <div className="px-8 py-5 border-t border-white/10 flex items-center justify-between bg-gradient-to-r from-transparent to-[#D4AF37]/5 flex-shrink-0">
                 <button
                   onClick={handleReset}
                   className="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-lg font-semibold transition-all"

@@ -19,7 +19,7 @@ export interface LayoutConfig {
 // Default layout configuration
 export const DEFAULT_LAYOUT: LayoutConfig = {
   overview: [
-    { id: 'heatmap-correlation', component: 'HeatMapCorrelationRow', enabled: true, order: 0 },
+    { id: 'heatmap-volatility', component: 'HeatMapVolatilityRow', enabled: true, order: 0 },
     { id: 'main-chart', component: 'MainChartCommentary', enabled: true, order: 1 },
     { id: 'secondary-charts', component: 'SecondaryCharts', enabled: true, order: 2 },
     { id: 'data-table', component: 'MarketDataTable', enabled: true, order: 3 },
