@@ -22,7 +22,7 @@ export default function BottomNavigation({ activeView, onViewChange }: BottomNav
     <motion.nav
       initial={{ y: 100 }}
       animate={{ y: 0 }}
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-[#1A2332]/98 to-[#0D1B2A]/98 backdrop-blur-xl border-t-2 border-[#D4AF37]/30 shadow-[0_-4px_24px_rgba(0,0,0,0.5)]"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-[#1A2332]/98 to-[#0D1B2A]/98 backdrop-blur-xl border-t-2 border-[#D4AF37]/30 shadow-[0_-4px_24px_rgba(0,0,0,0.5)]"
     >
       <div className="grid grid-cols-4 gap-0">
         {navItems.map((item) => {

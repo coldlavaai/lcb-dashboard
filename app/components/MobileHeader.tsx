@@ -12,7 +12,7 @@ export default function MobileHeader({ mobileMenuButton }: MobileHeaderProps) {
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="md:hidden bg-gradient-to-r from-[#0D1B2A]/98 via-[#1B263B]/98 to-[#0D1B2A]/98 backdrop-blur-xl border-b-2 border-[#D4AF37]/30 sticky top-0 z-50 shadow-[0_4px_24px_rgba(0,0,0,0.5)]"
+      className="md:hidden bg-gradient-to-r from-[#0D1B2A]/98 via-[#1B263B]/98 to-[#0D1B2A]/98 backdrop-blur-xl border-b-2 border-[#D4AF37]/30 sticky top-0 z-40 shadow-[0_4px_24px_rgba(0,0,0,0.5)]"
     >
       <div className="flex items-center justify-between px-4 py-3">
         {/* Logo */}

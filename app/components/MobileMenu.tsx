@@ -67,7 +67,7 @@ export default function MobileMenu({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={handleClose}
-              className="md:hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[60]"
+              className="md:hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[10000]"
             />
 
             {/* Menu Panel */}
@@ -76,7 +76,7 @@ export default function MobileMenu({
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="md:hidden fixed right-0 top-0 bottom-0 w-[85%] max-w-sm bg-gradient-to-br from-[#1A2332] via-[#2C3E50] to-[#1A2332] border-l-2 border-[#D4AF37]/30 z-[70] overflow-y-auto"
+              className="md:hidden fixed right-0 top-0 bottom-0 w-[85%] max-w-sm bg-gradient-to-br from-[#1A2332] via-[#2C3E50] to-[#1A2332] border-l-2 border-[#D4AF37]/30 z-[10001] overflow-y-auto"
             >
               {/* Menu Header */}
               <div className="sticky top-0 bg-[#1A2332]/95 backdrop-blur-sm border-b border-white/10 p-5">
