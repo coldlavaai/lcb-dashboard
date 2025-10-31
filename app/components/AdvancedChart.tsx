@@ -75,17 +75,17 @@ export default function AdvancedChart({ data, spread, title, description, color 
   return (
     <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none">
       {/* Chart Header */}
-      <div className="flex items-center justify-between mb-4 relative z-10">
-        <div>
-          <h3 className="text-2xl font-bold text-[#D4AF37] flex items-center gap-2">
-            <TrendingUp size={24} />
-            {title}
+      <div className="flex items-center justify-between mb-3 md:mb-4 relative z-10">
+        <div className="flex-1 min-w-0 mr-2">
+          <h3 className="text-lg md:text-2xl font-bold text-[#D4AF37] flex items-center gap-2">
+            <TrendingUp size={18} className="md:w-6 md:h-6 flex-shrink-0" />
+            <span className="truncate">{title}</span>
           </h3>
-          <p className="text-white/60 text-sm mt-1">{description}</p>
+          <p className="text-white/60 text-xs md:text-sm mt-0.5 md:mt-1 line-clamp-1">{description}</p>
         </div>
-        <div className="text-right">
-          <p className="text-3xl font-bold text-white">{latestValue}</p>
-          <p className={`text-sm font-semibold ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+        <div className="text-right flex-shrink-0">
+          <p className="text-xl md:text-3xl font-bold text-white">{latestValue}</p>
+          <p className={`text-xs md:text-sm font-semibold ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
             {isPositive ? '+' : ''}{change}%
           </p>
         </div>
@@ -161,7 +161,7 @@ export default function AdvancedChart({ data, spread, title, description, color 
 
       {/* Chart */}
       <div className="relative z-10">
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={250} className="md:h-[350px]">
         <ChartComponent data={chartData}>
           <defs>
             <linearGradient id={`gradient-${spread}`} x1="0" y1="0" x2="0" y2="1">
@@ -173,7 +173,9 @@ export default function AdvancedChart({ data, spread, title, description, color 
           <XAxis
             dataKey="Date"
             stroke="#fff"
-            tick={{ fill: '#fff', fontSize: 10 }}
+            tick={{ fill: '#fff', fontSize: 9 }}
+            interval="preserveStartEnd"
+            minTickGap={30}
             tickFormatter={(value) => {
               const date = new Date(value);
               return `${date.getMonth()+1}/${date.getDate()}`;
@@ -310,16 +312,16 @@ export default function AdvancedChart({ data, spread, title, description, color 
       </div>
 
       {/* Stats Footer */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6 pt-6 border-t border-white/10 relative z-10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mt-4 md:mt-6 pt-4 md:pt-6 border-t border-white/10 relative z-10">
         {[
           { label: '52W High', value: Math.max(...data.slice(0, 260).map(d => parseFloat(d[spread]) || 0)).toFixed(2) },
           { label: '52W Low', value: Math.min(...data.slice(0, 260).filter(d => d[spread] != null).map(d => parseFloat(d[spread]))).toFixed(2) },
           { label: '30D Avg', value: (data.slice(0, 30).reduce((sum, d) => sum + (parseFloat(d[spread]) || 0), 0) / 30).toFixed(2) },
-          { label: '7D Volatility', value: (Math.max(...data.slice(0, 7).map(d => parseFloat(d[spread]) || 0)) - Math.min(...data.slice(0, 7).filter(d => d[spread] != null).map(d => parseFloat(d[spread])))).toFixed(2) },
+          { label: '7D Vol', value: (Math.max(...data.slice(0, 7).map(d => parseFloat(d[spread]) || 0)) - Math.min(...data.slice(0, 7).filter(d => d[spread] != null).map(d => parseFloat(d[spread])))).toFixed(2) },
         ].map((stat, i) => (
-          <div key={i} className="text-center">
-            <p className="text-white/50 text-xs">{stat.label}</p>
-            <p className="text-white font-bold text-sm mt-1">{stat.value}</p>
+          <div key={i} className="text-center py-2">
+            <p className="text-white/50 text-[10px] md:text-xs leading-tight">{stat.label}</p>
+            <p className="text-white font-bold text-sm md:text-base mt-0.5 md:mt-1">{stat.value}</p>
           </div>
         ))}
       </div>
