@@ -12,6 +12,7 @@ import MarketDataTable from '../components/MarketDataTable';
 import AdvancedChart from '../components/AdvancedChart';
 import CommentaryPanel from '../components/CommentaryPanel';
 import LiveTicker from '../components/LiveTicker';
+import CustomDatePicker from '../components/CustomDatePicker';
 
 // Import data
 import cottonData from '../data/cotton_data.json';
@@ -23,8 +24,22 @@ export default function Dashboard() {
   const [timeRange, setTimeRange] = useState<TimeRange>('30d');
   const [viewMode, setViewMode] = useState<ViewMode>('overview');
   const [selectedSpread, setSelectedSpread] = useState('CZCE - ICE');
+  const [customDateRange, setCustomDateRange] = useState<{ start: Date | null; end: Date | null }>({
+    start: null,
+    end: null,
+  });
+  const [useCustomRange, setUseCustomRange] = useState(false);
 
   const getFilteredData = () => {
+    // Use custom date range if set
+    if (useCustomRange && customDateRange.start && customDateRange.end) {
+      return cottonData.filter((item) => {
+        const itemDate = new Date(item.Date);
+        return itemDate >= customDateRange.start! && itemDate <= customDateRange.end!;
+      });
+    }
+
+    // Otherwise use preset time ranges
     const days = {
       '7d': 7,
       '30d': 30,
@@ -33,6 +48,13 @@ export default function Dashboard() {
       'all': cottonData.length
     }[timeRange];
     return cottonData.slice(0, days);
+  };
+
+  const handleCustomDateRange = (startDate: Date, endDate: Date) => {
+    setCustomDateRange({ start: startDate, end: endDate });
+    setUseCustomRange(true);
+    // Reset preset time range visual state
+    setTimeRange('30d'); // Keep a default selected
   };
 
   const filteredData = getFilteredData();
@@ -102,9 +124,12 @@ export default function Dashboard() {
                 {(['7d', '30d', '90d', '1y', 'all'] as TimeRange[]).map((range) => (
                   <button
                     key={range}
-                    onClick={() => setTimeRange(range)}
+                    onClick={() => {
+                      setTimeRange(range);
+                      setUseCustomRange(false);
+                    }}
                     className={`px-4 py-2 rounded-lg text-xs font-bold uppercase transition-all ${
-                      timeRange === range
+                      timeRange === range && !useCustomRange
                         ? 'bg-[#2C7A7B] text-white shadow-lg'
                         : 'text-white/60 hover:text-white hover:bg-white/5'
                     }`}
@@ -113,6 +138,9 @@ export default function Dashboard() {
                   </button>
                 ))}
               </div>
+
+              {/* Custom Date Picker */}
+              <CustomDatePicker onRangeChange={handleCustomDateRange} />
 
               {/* Action Buttons */}
               <motion.button

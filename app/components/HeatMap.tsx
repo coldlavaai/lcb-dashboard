@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown } from 'lucide-react';
+import DetailModal from './DetailModal';
 
 interface HeatMapProps {
   data: any[];
@@ -9,6 +11,7 @@ interface HeatMapProps {
 }
 
 export default function HeatMap({ data, title }: HeatMapProps) {
+  const [selectedSpread, setSelectedSpread] = useState<string | null>(null);
   const spreads = [
     'CZCE - ICE',
     'AWP - ICE',
@@ -54,7 +57,8 @@ export default function HeatMap({ data, title }: HeatMapProps) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.05 }}
-              className="relative overflow-hidden rounded-lg p-4 cursor-pointer group"
+              onClick={() => setSelectedSpread(spread)}
+              className="relative overflow-hidden rounded-lg p-4 cursor-pointer group hover:scale-105 transition-transform"
               style={{
                 backgroundColor: getHeatColor(change),
                 border: `1px solid ${change > 0 ? '#22c55e' : change < 0 ? '#ef4444' : '#64748b'}40`,
@@ -92,6 +96,25 @@ export default function HeatMap({ data, title }: HeatMapProps) {
           );
         })}
       </div>
+
+      {/* Detail Modal */}
+      {selectedSpread && (
+        <DetailModal
+          isOpen={!!selectedSpread}
+          onClose={() => setSelectedSpread(null)}
+          title={selectedSpread}
+          dataKey={selectedSpread}
+          data={data}
+          description={`Detailed analysis of ${selectedSpread} spread over time`}
+          color={
+            selectedSpread === 'CZCE - ICE' ? '#D4AF37' :
+            selectedSpread === 'AWP - ICE' ? '#F4C430' :
+            selectedSpread === 'MCX - ICE' ? '#2C7A7B' :
+            selectedSpread === 'CZCE Cotton - PSF' ? '#E07A5F' :
+            '#4F46E5'
+          }
+        />
+      )}
     </div>
   );
 }

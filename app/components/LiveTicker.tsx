@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, AlertCircle, Activity } from 'lucide-react';
+import DetailModal from './DetailModal';
 
 interface TickerItem {
   id: string;
@@ -10,6 +11,7 @@ interface TickerItem {
   change?: number;
   trend?: 'up' | 'down' | 'neutral';
   alert?: boolean;
+  dataKey: string;
 }
 
 interface LiveTickerProps {
@@ -18,6 +20,7 @@ interface LiveTickerProps {
 
 export default function LiveTicker({ data }: LiveTickerProps) {
   const [isPaused, setIsPaused] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   // Calculate ticker items from data
   const getTickerItems = (): TickerItem[] => {
@@ -39,7 +42,8 @@ export default function LiveTicker({ data }: LiveTickerProps) {
         value: current.toFixed(2) + '¢',
         change: change,
         trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
-        alert: Math.abs(change) > 5
+        alert: Math.abs(change) > 5,
+        dataKey: 'CZCE - ICE'
       });
     }
 
@@ -53,7 +57,8 @@ export default function LiveTicker({ data }: LiveTickerProps) {
         label: 'AWP-ICE',
         value: current.toFixed(2) + '¢',
         change: change,
-        trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral'
+        trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
+        dataKey: 'AWP - ICE'
       });
     }
 
@@ -67,7 +72,8 @@ export default function LiveTicker({ data }: LiveTickerProps) {
         label: 'MCX-ICE',
         value: current.toFixed(2) + '¢',
         change: change,
-        trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral'
+        trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
+        dataKey: 'MCX - ICE'
       });
     }
 
@@ -81,7 +87,8 @@ export default function LiveTicker({ data }: LiveTickerProps) {
         label: 'ICE Cotton',
         value: current.toFixed(2) + '¢',
         change: change,
-        trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral'
+        trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
+        dataKey: 'ICE'
       });
     }
 
@@ -92,7 +99,8 @@ export default function LiveTicker({ data }: LiveTickerProps) {
         id: 'volume',
         label: 'Volume',
         value: (volume / 1000).toFixed(1) + 'K',
-        trend: 'neutral'
+        trend: 'neutral',
+        dataKey: 'Volume'
       });
     }
 
@@ -103,7 +111,8 @@ export default function LiveTicker({ data }: LiveTickerProps) {
         id: 'open-interest',
         label: 'Open Interest',
         value: (oi / 1000).toFixed(1) + 'K',
-        trend: 'neutral'
+        trend: 'neutral',
+        dataKey: 'O/I'
       });
     }
 
@@ -117,7 +126,8 @@ export default function LiveTicker({ data }: LiveTickerProps) {
         label: 'Cotton-PSF',
         value: current.toFixed(2),
         change: change,
-        trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral'
+        trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
+        dataKey: 'CZCE Cotton - PSF'
       });
     }
 
@@ -128,7 +138,8 @@ export default function LiveTicker({ data }: LiveTickerProps) {
         id: 'a-index',
         label: 'A-Index',
         value: current.toFixed(2) + '¢',
-        trend: 'neutral'
+        trend: 'neutral',
+        dataKey: 'A-Index'
       });
     }
 
@@ -158,15 +169,17 @@ export default function LiveTicker({ data }: LiveTickerProps) {
         {/* Scrolling ticker */}
         <div className="flex-1 overflow-hidden">
           <div
-            className={`flex gap-8 ${isPaused ? '' : 'animate-scroll'}`}
+            className="flex gap-8 animate-scroll"
             style={{
-              width: 'max-content'
+              width: 'max-content',
+              animationPlayState: isPaused ? 'paused' : 'running'
             }}
           >
             {doubledItems.map((item, index) => (
               <div
                 key={`${item.id}-${index}`}
-                className="flex items-center gap-2 whitespace-nowrap"
+                onClick={() => setSelectedItem(item.dataKey)}
+                className="flex items-center gap-2 whitespace-nowrap cursor-pointer hover:bg-white/5 px-3 py-1 rounded-lg transition-colors"
               >
                 {/* Alert icon for significant changes */}
                 {item.alert && (
@@ -220,11 +233,27 @@ export default function LiveTicker({ data }: LiveTickerProps) {
         .animate-scroll {
           animation: scroll 45s linear infinite;
         }
-
-        .animate-scroll:hover {
-          animation-play-state: paused;
-        }
       `}</style>
+
+      {/* Detail Modal */}
+      {selectedItem && (
+        <DetailModal
+          isOpen={!!selectedItem}
+          onClose={() => setSelectedItem(null)}
+          title={selectedItem}
+          dataKey={selectedItem}
+          data={data}
+          description={`Historical performance and analysis of ${selectedItem}`}
+          color={
+            selectedItem === 'CZCE - ICE' ? '#D4AF37' :
+            selectedItem === 'AWP - ICE' ? '#F4C430' :
+            selectedItem === 'MCX - ICE' ? '#2C7A7B' :
+            selectedItem === 'CZCE Cotton - PSF' ? '#E07A5F' :
+            selectedItem === 'ICE' ? '#4F46E5' :
+            '#2C7A7B'
+          }
+        />
+      )}
     </div>
   );
 }
