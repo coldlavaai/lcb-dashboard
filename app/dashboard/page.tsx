@@ -304,24 +304,14 @@ export default function Dashboard() {
                     >
                       {section.id === 'heatmap-volatility' && (
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                          <div className="relative">
-                            <HeatMap data={filteredData} title="Spread Heat Map" comparisonMode={comparisonMode} />
-                            <div className="absolute top-4 right-4 z-20">
-                              <CommentSection sectionId="heatmap" sectionTitle="Spread Heat Map" />
-                            </div>
-                          </div>
-                          <div className="relative">
-                            <VolatilityDashboard data={filteredData} />
-                            <div className="absolute top-4 right-4 z-20">
-                              <CommentSection sectionId="volatility" sectionTitle="Market Volatility" />
-                            </div>
-                          </div>
+                          <HeatMap data={filteredData} title="Spread Heat Map" comparisonMode={comparisonMode} />
+                          <VolatilityDashboard data={filteredData} />
                         </div>
                       )}
 
                       {section.id === 'main-chart' && (
                         <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
-                          <div className="xl:col-span-2 relative">
+                          <div className="xl:col-span-2">
                             <AdvancedChart
                               data={filteredData}
                               spread={selectedSpread}
@@ -329,9 +319,6 @@ export default function Dashboard() {
                               description={spreads.find(s => s.id === selectedSpread)?.description || ''}
                               color={spreads.find(s => s.id === selectedSpread)?.color || '#D4AF37'}
                             />
-                            <div className="absolute top-4 right-4 z-20">
-                              <CommentSection sectionId="main-chart" sectionTitle="Main Chart" />
-                            </div>
                           </div>
                           <div>
                             <CommentaryPanel spread={selectedSpread} />
@@ -340,7 +327,7 @@ export default function Dashboard() {
                       )}
 
                       {section.id === 'secondary-charts' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                           <AdvancedChart
                             data={filteredData}
                             spread="AWP - ICE"
@@ -357,19 +344,11 @@ export default function Dashboard() {
                               color="#2C7A7B"
                             />
                           )}
-                          <div className="absolute top-4 right-4 z-20">
-                            <CommentSection sectionId="secondary-charts" sectionTitle="Secondary Charts" />
-                          </div>
                         </div>
                       )}
 
                       {section.id === 'data-table' && (
-                        <div className="relative">
-                          <MarketDataTable data={filteredData} />
-                          <div className="absolute top-4 right-4 z-20">
-                            <CommentSection sectionId="data-table" sectionTitle="Market Data Table" />
-                          </div>
-                        </div>
+                        <MarketDataTable data={filteredData} />
                       )}
                     </DraggableSection>
                   );

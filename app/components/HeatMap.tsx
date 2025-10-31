@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import DetailModal from './DetailModal';
+import CommentSection from './CommentSection';
 import { ComparisonMode } from './ComparisonSelector';
 import { getComparisonDataPoint, calculatePercentageChange, calculatePointChange } from '../utils/comparisonUtils';
 import theme from '@/lib/theme';
@@ -57,6 +58,14 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
 
   return (
     <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none overflow-hidden group">
+      {/* Comment Button - Top Right */}
+      <div className="absolute top-4 right-4 z-20">
+        <CommentSection
+          sectionId="spread-heatmap"
+          sectionTitle={title}
+        />
+      </div>
+
       <h3 className="text-2xl font-bold text-[#D4AF37] mb-10 relative z-10 flex items-center gap-3">
         <span className="h-1 w-12 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
         {title}

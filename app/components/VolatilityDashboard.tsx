@@ -1,8 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Activity, Zap } from 'lucide-react';
+import { TrendingUp, TrendingDown, Activity, Zap, Info } from 'lucide-react';
 import theme from '@/lib/theme';
+import CommentSection from './CommentSection';
 
 interface VolatilityDashboardProps {
   data: any[];
@@ -20,6 +21,7 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
       field: 'Daily range',
       color: '#D4AF37',
       icon: Activity,
+      description: 'High - Low price spread for today\'s trading session',
     },
     {
       id: 'five-day',
@@ -28,6 +30,7 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
       field: 'Five day range',
       color: '#F4C430',
       icon: Activity,
+      description: 'Maximum high to minimum low over the last 5 trading days',
     },
     {
       id: 'three-month',
@@ -36,6 +39,7 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
       field: '3 month range',
       color: '#2C7A7B',
       icon: TrendingUp,
+      description: 'Maximum high to minimum low over the last 3 months (~63 trading days)',
     },
     {
       id: 'six-month',
@@ -44,6 +48,7 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
       field: '6 month range',
       color: '#4F46E5',
       icon: TrendingDown,
+      description: 'Maximum high to minimum low over the last 6 months (~126 trading days)',
     },
   ];
 
@@ -61,11 +66,30 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
 
   return (
     <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none overflow-hidden group">
-      <h3 className="text-2xl font-bold text-[#D4AF37] mb-8 relative z-10 flex items-center gap-3">
+      {/* Comment Button - Top Right */}
+      <div className="absolute top-4 right-4 z-20">
+        <CommentSection
+          sectionId="volatility-dashboard"
+          sectionTitle={title}
+        />
+      </div>
+
+      <h3 className="text-2xl font-bold text-[#D4AF37] mb-2 relative z-10 flex items-center gap-3">
         <Zap size={24} className="text-[#D4AF37]" />
         <span className="h-1 w-12 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
         {title}
       </h3>
+
+      {/* Volatility Explanation */}
+      <div className="mb-6 relative z-10 bg-white/5 rounded-lg p-4 border border-[#D4AF37]/20">
+        <div className="flex items-start gap-2">
+          <Info size={16} className="text-[#D4AF37] mt-0.5 flex-shrink-0" />
+          <p className="text-white/70 text-sm">
+            Volatility measures price movement ranges over different time periods. Data sourced from ICE cotton futures.
+            Higher ranges indicate greater price instability and market uncertainty. All values shown in US cents per pound (¢).
+          </p>
+        </div>
+      </div>
 
       <div className="space-y-6 relative z-10">
         {/* Volatility Range Cards */}
@@ -91,7 +115,9 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
                 <div className="text-white text-3xl font-black font-tabular">
                   {metric.value.toFixed(2)}¢
                 </div>
-                <div className="mt-2 text-white/50 text-xs">Price movement range</div>
+                <div className="mt-2 text-white/50 text-xs" title={metric.description}>
+                  {metric.description}
+                </div>
               </motion.div>
             );
           })}
@@ -126,7 +152,7 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
                 {weekMove >= 0 ? '+' : ''}{weekMove.toFixed(2)}¢
               </span>
             </div>
-            <p className="text-white/50 text-sm mt-3">7-day price change</p>
+            <p className="text-white/50 text-sm mt-3">Net change over last 7 trading days (Week move field from data)</p>
           </motion.div>
 
           {/* Hi/Lo Spread */}
@@ -137,10 +163,11 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
             className="relative overflow-hidden rounded-xl p-8 backdrop-blur-md border-2 border-[#2C7A7B]/60"
             style={{ backgroundColor: 'rgba(44, 122, 123, 0.1)' }}
           >
-            <h4 className="text-white font-bold text-lg mb-6 flex items-center gap-2">
+            <h4 className="text-white font-bold text-lg mb-2 flex items-center gap-2">
               <Activity size={20} className="text-[#2C7A7B]" />
               Daily High/Low
             </h4>
+            <p className="text-white/50 text-xs mb-4">Today's intraday price extremes from Hi, Lo, and Spread fields</p>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-white/70 text-sm">High</span>
@@ -156,7 +183,7 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
               </div>
               <div className="pt-4 border-t border-white/10">
                 <div className="flex items-center justify-between">
-                  <span className="text-white/70 text-sm font-semibold">Spread</span>
+                  <span className="text-white/70 text-sm font-semibold">Spread (Hi-Lo)</span>
                   <span className="text-[#D4AF37] text-3xl font-black font-tabular">
                     {hiLo.spread.toFixed(2)}¢
                   </span>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
 import { TrendingUp, Layers, BarChart3, Calendar } from 'lucide-react';
+import CommentSection from './CommentSection';
 
 interface AdvancedChartProps {
   data: any[];
@@ -39,6 +40,14 @@ export default function AdvancedChart({ data, spread, title, description, color 
 
   return (
     <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none">
+      {/* Comment Button - Top Right */}
+      <div className="absolute top-4 right-4 z-20">
+        <CommentSection
+          sectionId={`chart-${spread.replace(/\s+/g, '-').toLowerCase()}`}
+          sectionTitle={title}
+        />
+      </div>
+
       {/* Chart Header */}
       <div className="flex items-center justify-between mb-4 relative z-10">
         <div>
@@ -48,7 +57,7 @@ export default function AdvancedChart({ data, spread, title, description, color 
           </h3>
           <p className="text-white/60 text-sm mt-1">{description}</p>
         </div>
-        <div className="text-right">
+        <div className="text-right mr-12">
           <p className="text-3xl font-bold text-white">{latestValue}</p>
           <p className={`text-sm font-semibold ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
             {isPositive ? '+' : ''}{change}%
