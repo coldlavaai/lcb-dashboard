@@ -66,17 +66,11 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
 
   return (
     <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none overflow-hidden group">
-      <div className="flex items-center justify-between mb-2 relative z-10">
-        <h3 className="text-2xl font-bold text-[#D4AF37] flex items-center gap-3">
-          <Zap size={24} className="text-[#D4AF37]" />
-          <span className="h-1 w-12 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
-          {title}
-        </h3>
-        <CommentSection
-          sectionId="volatility-dashboard"
-          sectionTitle={title}
-        />
-      </div>
+      <h3 className="text-2xl font-bold text-[#D4AF37] mb-2 relative z-10 flex items-center gap-3">
+        <Zap size={24} className="text-[#D4AF37]" />
+        <span className="h-1 w-12 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
+        {title}
+      </h3>
 
       {/* Volatility Explanation */}
       <div className="mb-6 relative z-10 bg-white/5 rounded-lg p-4 border border-[#D4AF37]/20">
@@ -107,8 +101,14 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
                 }}
               >
                 <div className="flex items-start justify-between mb-4">
-                  <Icon size={20} style={{ color: metric.color }} />
-                  <span className="text-white/60 text-xs font-medium">{metric.label}</span>
+                  <div className="flex items-center gap-2">
+                    <Icon size={20} style={{ color: metric.color }} />
+                    <span className="text-white/60 text-xs font-medium">{metric.label}</span>
+                  </div>
+                  <CommentSection
+                    sectionId={`volatility-${metric.id}`}
+                    sectionTitle={metric.label}
+                  />
                 </div>
                 <div className="text-white text-3xl font-black font-tabular">
                   {metric.value.toFixed(2)}¢
@@ -134,13 +134,19 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
               borderColor: weekMove >= 0 ? `${theme.colors.data.profit}60` : `${theme.colors.data.loss}60`,
             }}
           >
-            <div className="flex items-center gap-3 mb-4">
-              {weekMove >= 0 ? (
-                <TrendingUp size={24} style={{ color: theme.colors.data.profit }} />
-              ) : (
-                <TrendingDown size={24} style={{ color: theme.colors.data.loss }} />
-              )}
-              <h4 className="text-white font-bold text-lg">Weekly Movement</h4>
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-3">
+                {weekMove >= 0 ? (
+                  <TrendingUp size={24} style={{ color: theme.colors.data.profit }} />
+                ) : (
+                  <TrendingDown size={24} style={{ color: theme.colors.data.loss }} />
+                )}
+                <h4 className="text-white font-bold text-lg">Weekly Movement</h4>
+              </div>
+              <CommentSection
+                sectionId="volatility-week-move"
+                sectionTitle="Weekly Movement"
+              />
             </div>
             <div className="flex items-baseline gap-2">
               <span
@@ -161,10 +167,16 @@ export default function VolatilityDashboard({ data, title = 'Market Volatility' 
             className="relative overflow-hidden rounded-xl p-8 backdrop-blur-md border-2 border-[#2C7A7B]/60"
             style={{ backgroundColor: 'rgba(44, 122, 123, 0.1)' }}
           >
-            <h4 className="text-white font-bold text-lg mb-2 flex items-center gap-2">
-              <Activity size={20} className="text-[#2C7A7B]" />
-              Daily High/Low
-            </h4>
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="text-white font-bold text-lg flex items-center gap-2">
+                <Activity size={20} className="text-[#2C7A7B]" />
+                Daily High/Low
+              </h4>
+              <CommentSection
+                sectionId="volatility-hi-lo"
+                sectionTitle="Daily High/Low"
+              />
+            </div>
             <p className="text-white/50 text-xs mb-4">Today's intraday price extremes from Hi, Lo, and Spread fields</p>
             <div className="space-y-4">
               <div className="flex items-center justify-between">

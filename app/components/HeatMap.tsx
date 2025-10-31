@@ -58,16 +58,10 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
 
   return (
     <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-2xl p-10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none overflow-hidden group">
-      <div className="flex items-center justify-between mb-10 relative z-10">
-        <h3 className="text-2xl font-bold text-[#D4AF37] flex items-center gap-3">
-          <span className="h-1 w-12 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
-          {title}
-        </h3>
-        <CommentSection
-          sectionId="spread-heatmap"
-          sectionTitle={title}
-        />
-      </div>
+      <h3 className="text-2xl font-bold text-[#D4AF37] mb-10 relative z-10 flex items-center gap-3">
+        <span className="h-1 w-12 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
+        {title}
+      </h3>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6 relative z-10">
         {spreads.map((spread, index) => {
           const change = getChangeValue(spread);
@@ -81,17 +75,27 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
               transition={{ delay: index * 0.08, type: "spring", stiffness: 100 }}
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => setSelectedSpread(spread)}
-              className="relative overflow-hidden rounded-2xl p-8 cursor-pointer group/card backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300 min-h-[180px] flex flex-col justify-between"
+              className="relative overflow-hidden rounded-2xl p-8 backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300 min-h-[180px] flex flex-col justify-between"
               style={{
                 backgroundColor: getHeatColor(change),
                 border: `2px solid ${change > 0 ? theme.colors.data.profit : change < 0 ? theme.colors.data.loss : theme.colors.data.neutral}80`,
               }}
             >
               <div className="relative z-10 flex flex-col h-full justify-between">
-                <p className="text-white/95 text-base font-bold mb-4 line-clamp-2 leading-snug tracking-wide">
-                  {spread}
-                </p>
+                <div className="flex items-start justify-between gap-2 mb-4">
+                  <p
+                    onClick={() => setSelectedSpread(spread)}
+                    className="text-white/95 text-base font-bold line-clamp-2 leading-snug tracking-wide cursor-pointer flex-1"
+                  >
+                    {spread}
+                  </p>
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <CommentSection
+                      sectionId={`spread-${spread.replace(/\s+/g, '-').toLowerCase()}`}
+                      sectionTitle={spread}
+                    />
+                  </div>
+                </div>
                 <div>
                   <p className="text-white text-4xl font-black mb-3 font-tabular tracking-tight">
                     {value.toFixed(2)}
