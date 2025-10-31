@@ -79,42 +79,44 @@ export default function DetailModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/70 backdrop-blur-md z-[100]"
+            className="fixed inset-0 bg-black/80 backdrop-blur-md z-[9999] cursor-pointer"
           />
 
-          {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="fixed inset-0 z-[101] flex items-center justify-center p-6 pointer-events-none"
-          >
-            <div
-              className="bg-gradient-to-br from-[#1A2332]/95 via-[#1A2332]/90 to-[#2C3E50]/95 backdrop-blur-xl border border-[#D4AF37]/30 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto pointer-events-auto"
+          {/* Modal Container */}
+          <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 pointer-events-none overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative bg-gradient-to-br from-[#1A2332]/98 via-[#1A2332]/95 to-[#2C3E50]/98 backdrop-blur-2xl border-2 border-[#D4AF37]/40 rounded-2xl shadow-[0_24px_64px_rgba(0,0,0,0.8)] max-w-5xl w-full my-8 pointer-events-auto overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Header */}
-              <div className="sticky top-0 bg-[#1A2332]/95 backdrop-blur-xl border-b border-[#D4AF37]/20 p-6 flex items-center justify-between z-10">
-                <div>
+              {/* Header - Always Visible */}
+              <div className="bg-gradient-to-r from-[#1A2332] to-[#2C3E50] border-b-2 border-[#D4AF37]/40 p-6 flex items-center justify-between">
+                <div className="flex-1 min-w-0">
                   <h2 className="text-2xl font-bold text-[#D4AF37] flex items-center gap-2">
                     <Activity size={24} style={{ color }} />
-                    {title}
+                    <span className="truncate">{title}</span>
                   </h2>
                   {description && (
-                    <p className="text-white/60 text-sm mt-1">{description}</p>
+                    <p className="text-white/70 text-sm mt-1">{description}</p>
                   )}
                 </div>
                 <button
-                  onClick={onClose}
-                  className="p-3 hover:bg-red-500/20 rounded-xl transition-all z-20 border border-white/10 hover:border-red-500/40"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                  }}
+                  className="flex-shrink-0 ml-4 p-3 bg-red-500/10 hover:bg-red-500/30 rounded-xl transition-all border-2 border-red-500/30 hover:border-red-500 group"
                   title="Close (Esc)"
                 >
-                  <X size={24} className="text-white hover:text-red-400 transition-colors" />
+                  <X size={24} className="text-red-400 group-hover:text-red-300 transition-colors" />
                 </button>
               </div>
 
-              {/* Content */}
-              <div className="p-6 space-y-6">
+              {/* Content - Scrollable */}
+              <div className="p-6 space-y-6 max-h-[calc(90vh-200px)] overflow-y-auto">
                 {/* Current Value & Change */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-[#0F1419]/50 rounded-xl p-4 border border-white/10">
@@ -269,9 +271,9 @@ export default function DetailModal({
               </div>
 
               {/* Footer */}
-              <div className="border-t border-white/10 p-4 flex items-center justify-between bg-[#0F1419]/30">
-                <p className="text-white/50 text-xs flex items-center gap-2">
-                  <Calendar size={14} />
+              <div className="border-t-2 border-[#D4AF37]/40 p-6 flex items-center justify-between bg-gradient-to-r from-[#1A2332] to-[#2C3E50]">
+                <p className="text-white/60 text-sm flex items-center gap-2">
+                  <Calendar size={16} />
                   Last updated: {new Date(data[0]?.Date).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
@@ -279,14 +281,17 @@ export default function DetailModal({
                   })}
                 </p>
                 <button
-                  onClick={onClose}
-                  className="px-4 py-2 bg-gradient-to-r from-[#D4AF37] to-[#F4C430] text-[#1A2332] font-semibold rounded-lg hover:from-[#F4C430] hover:to-[#D4AF37] transition-all"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                  }}
+                  className="px-6 py-3 bg-gradient-to-r from-[#D4AF37] to-[#F4C430] text-[#1A2332] font-bold rounded-xl hover:from-[#F4C430] hover:to-[#D4AF37] transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   Close
                 </button>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>
