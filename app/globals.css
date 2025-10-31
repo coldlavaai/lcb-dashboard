@@ -188,26 +188,127 @@ html {
   padding: 1rem;
 }
 
-/* Mobile Optimizations */
+/* Mobile-First Optimizations */
 @media (max-width: 768px) {
-  /* Reduce chart heights on mobile */
+  /* FORCE 2-COLUMN GRID ON MOBILE */
+  .grid-cols-1 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  /* Exception: Keep single column for certain sections */
+  .grid-cols-1.mobile-single-col,
+  .mobile-single-col .grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+
+  /* Compact spacing */
+  body {
+    padding: 0 !important;
+  }
+
+  .max-w-\[2000px\] {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  /* Reduce chart heights */
   .recharts-responsive-container {
-    max-height: 250px !important;
+    max-height: 200px !important;
+  }
+
+  /* Compact cards */
+  [class*="rounded-2xl"],
+  [class*="rounded-xl"] {
+    border-radius: 0.75rem !important;
+    padding: 0.75rem !important;
   }
 
   /* Better touch targets */
   button, a, [role="button"] {
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 40px;
+    min-width: 40px;
   }
 
-  /* Reduce padding on mobile */
-  .mobile-reduce-padding {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+  /* Horizontal scroll containers */
+  .mobile-scroll {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 0.75rem !important;
+    padding-bottom: 0.5rem !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
-  /* Make modals full-screen on mobile */
+  .mobile-scroll > * {
+    flex: 0 0 85% !important;
+    scroll-snap-align: start !important;
+  }
+
+  /* Compact headers */
+  h1 {
+    font-size: 1.25rem !important;
+    line-height: 1.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.125rem !important;
+    line-height: 1.375rem !important;
+  }
+
+  h3 {
+    font-size: 1rem !important;
+    line-height: 1.25rem !important;
+  }
+
+  /* Tighter gaps */
+  .space-y-12 > * + *,
+  .space-y-10 > * + * {
+    margin-top: 1rem !important;
+  }
+
+  .gap-12,
+  .gap-10,
+  .gap-8 {
+    gap: 0.75rem !important;
+  }
+
+  /* Smaller text */
+  .text-base {
+    font-size: 0.875rem !important;
+  }
+
+  .text-sm {
+    font-size: 0.75rem !important;
+  }
+
+  /* Compact padding */
+  .p-10,
+  .p-8,
+  .p-6 {
+    padding: 0.75rem !important;
+  }
+
+  .px-8,
+  .px-6 {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .py-12,
+  .py-10,
+  .py-8 {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+
+  /* Hide less important elements on mobile */
+  .mobile-hide {
+    display: none !important;
+  }
+
+  /* Full-screen modals */
   [class*="fixed"][class*="inset"] {
     inset: 0 !important;
     border-radius: 0 !important;
@@ -215,35 +316,15 @@ html {
     max-height: 100vh !important;
   }
 
-  /* Improve table scrolling */
+  /* Table improvements */
   .overflow-x-auto {
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x proximity;
   }
 
-  /* Better font sizes on mobile */
-  h1 {
-    font-size: 1.5rem !important;
-  }
-
-  h2 {
-    font-size: 1.25rem !important;
-  }
-
-  h3 {
-    font-size: 1.125rem !important;
-  }
-
-  /* Tighter spacing on mobile */
-  .gap-8 {
-    gap: 1rem !important;
-  }
-
-  .gap-10 {
-    gap: 1.5rem !important;
-  }
-
-  .gap-12 {
-    gap: 2rem !important;
+  /* Stat grids - 2 columns */
+  [class*="grid-cols-4"],
+  [class*="grid-cols-3"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
