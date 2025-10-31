@@ -185,6 +185,15 @@ export default function CustomDatePicker({
 
       {/* Custom Styles for react-date-range */}
       <style jsx global>{`
+        /* Hide/override all white backgrounds */
+        .rdrDateRangePickerWrapper,
+        .rdrDefinedRangesWrapper,
+        .rdrDateDisplayWrapper,
+        .rdrDateDisplay {
+          background: transparent !important;
+          display: none !important;
+        }
+
         .rdrCalendarWrapper {
           background: transparent !important;
           color: white !important;
@@ -192,6 +201,11 @@ export default function CustomDatePicker({
 
         .rdrMonth {
           width: 300px !important;
+          background: transparent !important;
+        }
+
+        .rdrMonths {
+          background: transparent !important;
         }
 
         .rdrMonthAndYearWrapper {
