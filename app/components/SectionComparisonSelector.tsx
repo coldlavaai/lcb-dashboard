@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { Calendar, ChevronDown, RotateCcw } from 'lucide-react';
 import { ComparisonMode } from './ComparisonSelector';
@@ -19,6 +20,23 @@ export default function SectionComparisonSelector({
   compact = false,
 }: SectionComparisonSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.bottom + window.scrollY + 8,
+        left: rect.right + window.scrollX - 224, // 224px = w-56
+      });
+    }
+  }, [isOpen]);
 
   const options: { id: ComparisonMode; label: string }[] = [
     { id: 'latest', label: 'Previous Day' },
@@ -32,45 +50,25 @@ export default function SectionComparisonSelector({
   const isUsingGlobal = value === null;
   const selectedOption = options.find(opt => opt.id === activeValue) || options[0];
 
-  return (
-    <div className="relative">
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-1.5 ${
-          compact
-            ? 'px-2.5 py-1.5 text-xs'
-            : 'px-3 py-2 text-sm'
-        } ${
-          isUsingGlobal
-            ? 'bg-white/5 border-white/10 text-white/60'
-            : 'bg-[#D4AF37]/10 border-[#D4AF37]/30 text-[#D4AF37]'
-        } rounded-lg border hover:border-[#D4AF37]/50 transition-all font-medium`}
-        title={isUsingGlobal ? 'Using global comparison' : 'Section-specific comparison'}
+  const dropdownContent = mounted && isOpen && typeof document !== 'undefined' && createPortal(
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 z-[9998]"
+        onClick={() => setIsOpen(false)}
+      />
+
+      {/* Dropdown */}
+      <motion.div
+        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        style={{
+          position: 'fixed',
+          top: `${position.top}px`,
+          left: `${position.left}px`,
+        }}
+        className="w-56 bg-[#1A2332] backdrop-blur-xl border border-[#D4AF37]/30 rounded-lg shadow-2xl overflow-hidden z-[9999]"
       >
-        <Calendar size={compact ? 12 : 14} />
-        <span>{selectedOption.label}</span>
-        <ChevronDown
-          size={compact ? 10 : 12}
-          className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
-        />
-      </motion.button>
-
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 z-[9998]"
-            onClick={() => setIsOpen(false)}
-          />
-
-          {/* Dropdown */}
-          <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="absolute top-full right-0 mt-2 w-56 bg-[#1A2332] backdrop-blur-xl border border-[#D4AF37]/30 rounded-lg shadow-2xl overflow-hidden z-[9999]"
-          >
             <div className="p-2">
               {/* Use Global Option */}
               <motion.button
@@ -126,8 +124,36 @@ export default function SectionComparisonSelector({
               </p>
             </div>
           </motion.div>
-        </>
-      )}
-    </div>
+        </>,
+    document.body
+  );
+
+  return (
+    <>
+      <motion.button
+        ref={buttonRef}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => setIsOpen(!isOpen)}
+        className={`flex items-center gap-1.5 ${
+          compact
+            ? 'px-2.5 py-1.5 text-xs'
+            : 'px-3 py-2 text-sm'
+        } ${
+          isUsingGlobal
+            ? 'bg-white/5 border-white/10 text-white/60'
+            : 'bg-[#D4AF37]/10 border-[#D4AF37]/30 text-[#D4AF37]'
+        } rounded-lg border hover:border-[#D4AF37]/50 transition-all font-medium`}
+        title={isUsingGlobal ? 'Using global comparison' : 'Section-specific comparison'}
+      >
+        <Calendar size={compact ? 12 : 14} />
+        <span>{selectedOption.label}</span>
+        <ChevronDown
+          size={compact ? 10 : 12}
+          className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </motion.button>
+      {dropdownContent}
+    </>
   );
 }

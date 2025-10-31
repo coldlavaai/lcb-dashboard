@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, AlertCircle, Activity, Info, ChevronDown } from 'lucide-react';
 import DetailModal from './DetailModal';
@@ -30,6 +31,23 @@ export default function LiveTicker({ data, comparisonMode = 'latest', onComparis
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [showLegend, setShowLegend] = useState(false);
   const [showComparisonMenu, setShowComparisonMenu] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (showComparisonMenu && menuButtonRef.current) {
+      const rect = menuButtonRef.current.getBoundingClientRect();
+      setMenuPosition({
+        top: rect.bottom + window.scrollY + 4,
+        left: rect.left + window.scrollX,
+      });
+    }
+  }, [showComparisonMenu]);
 
   // Get comparison label
   const getComparisonLabel = () => {
@@ -207,43 +225,58 @@ export default function LiveTicker({ data, comparisonMode = 'latest', onComparis
               Live Market Data
             </span>
             {onComparisonChange ? (
-              <div className="relative">
+              <>
                 <button
+                  ref={menuButtonRef}
                   onClick={() => setShowComparisonMenu(!showComparisonMenu)}
                   className="text-white/50 text-[10px] font-medium hover:text-[#D4AF37] transition-colors flex items-center gap-1"
                 >
                   {getComparisonLabel()}
                   <ChevronDown size={10} />
                 </button>
-                {showComparisonMenu && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="absolute top-full left-0 mt-1 bg-[#1A2332] border border-white/20 rounded-lg shadow-xl z-[9999] min-w-[150px]"
-                  >
-                    {[
-                      { value: 'latest' as ComparisonMode, label: 'vs Previous Day' },
-                      { value: 'week' as ComparisonMode, label: 'vs Last Week' },
-                      { value: 'month' as ComparisonMode, label: 'vs Last Month' },
-                      { value: 'year' as ComparisonMode, label: 'vs Last Year' },
-                      { value: 'decade' as ComparisonMode, label: 'vs 10 Years Ago' },
-                    ].map((option) => (
-                      <button
-                        key={option.value}
-                        onClick={() => {
-                          onComparisonChange(option.value);
-                          setShowComparisonMenu(false);
-                        }}
-                        className={`w-full text-left px-3 py-2 text-xs hover:bg-white/10 transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                          comparisonMode === option.value ? 'bg-[#D4AF37]/20 text-[#D4AF37]' : 'text-white/70'
-                        }`}
-                      >
-                        {option.label}
-                      </button>
-                    ))}
-                  </motion.div>
+                {mounted && showComparisonMenu && typeof document !== 'undefined' && createPortal(
+                  <>
+                    {/* Backdrop */}
+                    <div
+                      className="fixed inset-0 z-[9998]"
+                      onClick={() => setShowComparisonMenu(false)}
+                    />
+                    {/* Dropdown */}
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      style={{
+                        position: 'fixed',
+                        top: `${menuPosition.top}px`,
+                        left: `${menuPosition.left}px`,
+                      }}
+                      className="bg-[#1A2332] border border-white/20 rounded-lg shadow-xl z-[9999] min-w-[150px]"
+                    >
+                      {[
+                        { value: 'latest' as ComparisonMode, label: 'vs Previous Day' },
+                        { value: 'week' as ComparisonMode, label: 'vs Last Week' },
+                        { value: 'month' as ComparisonMode, label: 'vs Last Month' },
+                        { value: 'year' as ComparisonMode, label: 'vs Last Year' },
+                        { value: 'decade' as ComparisonMode, label: 'vs 10 Years Ago' },
+                      ].map((option) => (
+                        <button
+                          key={option.value}
+                          onClick={() => {
+                            onComparisonChange(option.value);
+                            setShowComparisonMenu(false);
+                          }}
+                          className={`w-full text-left px-3 py-2 text-xs hover:bg-white/10 transition-colors first:rounded-t-lg last:rounded-b-lg ${
+                            comparisonMode === option.value ? 'bg-[#D4AF37]/20 text-[#D4AF37]' : 'text-white/70'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </motion.div>
+                  </>,
+                  document.body
                 )}
-              </div>
+              </>
             ) : (
               <span className="text-white/50 text-[10px] font-medium">
                 {getComparisonLabel()}
