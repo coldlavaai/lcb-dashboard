@@ -79,13 +79,82 @@ html {
 .light-theme {
   --background: #F8F9FA;
   --foreground: #1A1A1A;
+  --color-primary: #D4AF37;
+  --color-accent: #F59E0B;
 }
 
 .light-theme body {
-  background: #F8F9FA;
-  color: #1A1A1A;
+  background: #F8F9FA !important;
+  color: #1A1A1A !important;
 }
 
+/* Override dark backgrounds */
+.light-theme [class*="bg-[#0A0B0D]"],
+.light-theme [class*="bg-[#1A2332]"],
+.light-theme [class*="bg-[#13151A]"],
+.light-theme [class*="bg-[#0F1419]"],
+.light-theme [class*="bg-[#2C3E50]"] {
+  background-color: #FFFFFF !important;
+}
+
+/* Override gradient backgrounds */
+.light-theme [class*="from-[#1A2332]"] {
+  --tw-gradient-from: #FFFFFF !important;
+}
+
+.light-theme [class*="to-[#1A2332]"],
+.light-theme [class*="via-[#2C3E50]"] {
+  --tw-gradient-to: #F8F9FA !important;
+  --tw-gradient-via: #F0F0F0 !important;
+}
+
+/* Override text colors */
+.light-theme [class*="text-white"] {
+  color: #1A1A1A !important;
+}
+
+.light-theme [class*="text-white/80"],
+.light-theme [class*="text-white/70"] {
+  color: #333333 !important;
+}
+
+.light-theme [class*="text-white/60"] {
+  color: #666666 !important;
+}
+
+.light-theme [class*="text-white/40"],
+.light-theme [class*="text-white/50"] {
+  color: #999999 !important;
+}
+
+/* Override borders */
+.light-theme [class*="border-white/10"],
+.light-theme [class*="border-white/5"] {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.light-theme [class*="border-white/20"] {
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Override hover states */
+.light-theme [class*="hover\\:bg-white/5"]:hover,
+.light-theme [class*="hover\\:bg-white/10"]:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.light-theme [class*="hover\\:bg-white/20"]:hover {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Keep gold/accent colors */
+.light-theme [class*="bg-[#D4AF37]"],
+.light-theme [class*="text-[#D4AF37]"],
+.light-theme [class*="border-[#D4AF37]"] {
+  /* Keep as is - these are accent colors */
+}
+
+/* Scrollbar */
 .light-theme ::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.05);
 }
@@ -98,10 +167,12 @@ html {
   background: rgba(212, 175, 55, 0.6);
 }
 
+/* Glass morphism */
 .light-theme .glass {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Compact Mode */

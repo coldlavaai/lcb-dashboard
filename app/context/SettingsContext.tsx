@@ -21,7 +21,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
   autoRefresh: false,
   refreshInterval: 5,
   showVolatilityAlerts: true,
-  compactMode: false,
+  compactMode: true,
 };
 
 interface SettingsContextType {
