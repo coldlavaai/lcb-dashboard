@@ -24,7 +24,7 @@ export default function BottomNavigation({ activeView, onViewChange }: BottomNav
       animate={{ y: 0 }}
       className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-[#1A2332]/98 to-[#0D1B2A]/98 backdrop-blur-xl border-t-2 border-[#D4AF37]/30 shadow-[0_-4px_24px_rgba(0,0,0,0.5)]"
     >
-      <div className="grid grid-cols-4 gap-0">
+      <div className="grid grid-cols-4 gap-0 mobile-nav-grid">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeView === item.id;
@@ -34,7 +34,7 @@ export default function BottomNavigation({ activeView, onViewChange }: BottomNav
               key={item.id}
               onClick={() => onViewChange(item.id)}
               whileTap={{ scale: 0.95 }}
-              className={`flex flex-col items-center justify-center py-3 px-2 transition-all ${
+              className={`flex flex-col items-center justify-center py-2 px-1 transition-all ${
                 isActive ? 'text-[#D4AF37]' : 'text-white/60'
               }`}
             >
@@ -45,9 +45,9 @@ export default function BottomNavigation({ activeView, onViewChange }: BottomNav
                 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               >
-                <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
               </motion.div>
-              <span className={`text-[10px] font-semibold mt-1 ${isActive ? 'text-[#D4AF37]' : 'text-white/60'}`}>
+              <span className={`text-[9px] font-semibold mt-0.5 ${isActive ? 'text-[#D4AF37]' : 'text-white/60'}`}>
                 {item.label}
               </span>
               {isActive && (
