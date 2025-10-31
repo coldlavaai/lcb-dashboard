@@ -76,13 +76,13 @@ export default function CommentSection({
   const commentCount = comments.length;
 
   return (
-    <div className="relative">
+    <div className="relative z-[100]">
       {/* Comment Button/Badge */}
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2.5 bg-[#0F1419]/80 hover:bg-[#2C7A7B]/20 text-white/90 hover:text-[#2C7A7B] rounded-xl border border-white/10 hover:border-[#2C7A7B]/40 transition-all text-sm font-medium relative"
+        className="flex items-center gap-2 px-4 py-2.5 bg-[#0F1419]/80 hover:bg-[#2C7A7B]/20 text-white/90 hover:text-[#2C7A7B] rounded-xl border border-white/10 hover:border-[#2C7A7B]/40 transition-all text-sm font-medium relative z-[100]"
       >
         <MessageSquare size={16} className="text-[#2C7A7B]" />
         <span>Comments</span>
@@ -100,7 +100,7 @@ export default function CommentSection({
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="absolute top-full right-0 mt-2 w-96 max-h-[600px] bg-gradient-to-br from-[#1A2332] to-[#2C3E50] backdrop-blur-2xl border-2 border-[#2C7A7B]/40 rounded-xl shadow-[0_16px_48px_rgba(0,0,0,0.8)] overflow-hidden z-50 flex flex-col"
+            className="absolute top-full right-0 mt-2 w-96 max-h-[600px] bg-gradient-to-br from-[#1A2332] to-[#2C3E50] backdrop-blur-2xl border-2 border-[#2C7A7B]/40 rounded-xl shadow-[0_16px_48px_rgba(0,0,0,0.8)] overflow-hidden z-[9999] flex flex-col"
           >
             {/* Header */}
             <div className="px-4 py-3 border-b border-white/10 bg-gradient-to-r from-[#2C7A7B]/10 to-transparent flex items-center justify-between">
