@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
-import { TrendingUp, Layers, BarChart3, Calendar } from 'lucide-react';
+import { TrendingUp, Layers, BarChart3, Calendar, TrendingDown as BollingerIcon } from 'lucide-react';
+import { calculateSMA, calculateEMA, calculateBollingerBands, convertToDataPoints } from '../utils/technicalIndicators';
 
 interface AdvancedChartProps {
   data: any[];
@@ -15,19 +16,53 @@ interface AdvancedChartProps {
 
 export default function AdvancedChart({ data, spread, title, description, color }: AdvancedChartProps) {
   const [chartType, setChartType] = useState<'area' | 'line'>('area');
-  const [showMA, setShowMA] = useState(false);
+  const [showSMA20, setShowSMA20] = useState(false);
+  const [showSMA50, setShowSMA50] = useState(false);
+  const [showEMA, setShowEMA] = useState(false);
+  const [showBollinger, setShowBollinger] = useState(false);
 
-  // Prepare chart data
-  const chartData = data
-    .filter((d) => d[spread] != null && !isNaN(parseFloat(d[spread])))
-    .reverse();
+  // Prepare chart data with technical indicators
+  const chartData = useMemo(() => {
+    const filtered = data
+      .filter((d) => d[spread] != null && !isNaN(parseFloat(d[spread])))
+      .reverse();
 
-  // Calculate moving average
-  const dataWithMA = showMA && chartData.length > 20 ? chartData.map((d, i) => {
-    if (i < 19) return { ...d, ma20: null };
-    const sum = chartData.slice(i - 19, i + 1).reduce((acc, item) => acc + (parseFloat(item[spread]) || 0), 0);
-    return { ...d, ma20: sum / 20 };
-  }) : chartData;
+    if (filtered.length === 0) return [];
+
+    // Convert to DataPoint format for technical indicators
+    const dataPoints = convertToDataPoints(filtered, spread);
+
+    // Calculate indicators
+    const sma20Data = showSMA20 ? calculateSMA(dataPoints, 20) : [];
+    const sma50Data = showSMA50 ? calculateSMA(dataPoints, 50) : [];
+    const emaData = showEMA ? calculateEMA(dataPoints, 20) : [];
+    const bollingerData = showBollinger ? calculateBollingerBands(dataPoints, 20, 2) : [];
+
+    // Merge indicators into chart data
+    return filtered.map((d, i) => {
+      const result: any = { ...d };
+
+      if (showSMA20 && sma20Data[i - 19]) {
+        result.sma20 = sma20Data[i - 19].value;
+      }
+
+      if (showSMA50 && sma50Data[i - 49]) {
+        result.sma50 = sma50Data[i - 49].value;
+      }
+
+      if (showEMA && emaData[i - 19]) {
+        result.ema20 = emaData[i - 19].value;
+      }
+
+      if (showBollinger && bollingerData[i - 19]) {
+        result.bbUpper = bollingerData[i - 19].upper;
+        result.bbMiddle = bollingerData[i - 19].middle;
+        result.bbLower = bollingerData[i - 19].lower;
+      }
+
+      return result;
+    });
+  }, [data, spread, showSMA20, showSMA50, showEMA, showBollinger]);
 
   const latestValue = data[0]?.[spread] ? parseFloat(data[0][spread]).toFixed(2) : 'N/A';
   const previousValue = data[1]?.[spread] ? parseFloat(data[1][spread]) : 0;
@@ -77,21 +112,57 @@ export default function AdvancedChart({ data, spread, title, description, color 
           </button>
         </div>
 
+        <div className="h-6 w-px bg-white/10"></div>
+
         <button
-          onClick={() => setShowMA(!showMA)}
+          onClick={() => setShowSMA20(!showSMA20)}
           className={`px-3 py-1 text-xs rounded transition-all flex items-center gap-1 ${
-            showMA ? 'bg-[#D4AF37] text-[#1A2332]' : 'bg-[#0F1419] text-white/70'
+            showSMA20 ? 'bg-[#F4C430] text-[#1A2332]' : 'bg-[#0F1419] text-white/70'
           }`}
+          title="20-day Simple Moving Average"
         >
           <Layers size={12} />
-          MA(20)
+          SMA(20)
+        </button>
+
+        <button
+          onClick={() => setShowSMA50(!showSMA50)}
+          className={`px-3 py-1 text-xs rounded transition-all flex items-center gap-1 ${
+            showSMA50 ? 'bg-[#E07A5F] text-[#1A2332]' : 'bg-[#0F1419] text-white/70'
+          }`}
+          title="50-day Simple Moving Average"
+        >
+          <Layers size={12} />
+          SMA(50)
+        </button>
+
+        <button
+          onClick={() => setShowEMA(!showEMA)}
+          className={`px-3 py-1 text-xs rounded transition-all flex items-center gap-1 ${
+            showEMA ? 'bg-[#4F46E5] text-white' : 'bg-[#0F1419] text-white/70'
+          }`}
+          title="20-day Exponential Moving Average"
+        >
+          <TrendingUp size={12} />
+          EMA(20)
+        </button>
+
+        <button
+          onClick={() => setShowBollinger(!showBollinger)}
+          className={`px-3 py-1 text-xs rounded transition-all flex items-center gap-1 ${
+            showBollinger ? 'bg-[#2C7A7B] text-white' : 'bg-[#0F1419] text-white/70'
+          }`}
+          title="Bollinger Bands (20, 2)"
+        >
+          <BollingerIcon size={12} />
+          Bollinger
         </button>
       </div>
 
       {/* Chart */}
       <div className="relative z-10">
       <ResponsiveContainer width="100%" height={350}>
-        <ChartComponent data={dataWithMA}>
+        <ChartComponent data={chartData}>
           <defs>
             <linearGradient id={`gradient-${spread}`} x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={color} stopOpacity={0.4}/>
@@ -116,8 +187,42 @@ export default function AdvancedChart({ data, spread, title, description, color 
               borderRadius: '8px',
             }}
             labelStyle={{ color: '#D4AF37' }}
-            formatter={(value: any) => [parseFloat(value).toFixed(2), spread]}
+            formatter={(value: any, name: string) => {
+              const labels: Record<string, string> = {
+                sma20: 'SMA(20)',
+                sma50: 'SMA(50)',
+                ema20: 'EMA(20)',
+                bbUpper: 'BB Upper',
+                bbMiddle: 'BB Middle',
+                bbLower: 'BB Lower',
+              };
+              return [parseFloat(value).toFixed(2), labels[name] || spread];
+            }}
           />
+
+          {/* Bollinger Bands Area (background) */}
+          {showBollinger && (
+            <Area
+              type="monotone"
+              dataKey="bbUpper"
+              stroke="none"
+              fill="#2C7A7B"
+              fillOpacity={0.1}
+              stackId="bb"
+            />
+          )}
+          {showBollinger && (
+            <Area
+              type="monotone"
+              dataKey="bbLower"
+              stroke="none"
+              fill="#2C7A7B"
+              fillOpacity={0.1}
+              stackId="bb"
+            />
+          )}
+
+          {/* Main Price Line/Area */}
           {chartType === 'area' ? (
             <Area
               type="monotone"
@@ -135,13 +240,63 @@ export default function AdvancedChart({ data, spread, title, description, color 
               dot={false}
             />
           )}
-          {showMA && (
+
+          {/* Bollinger Bands Lines */}
+          {showBollinger && (
+            <>
+              <Line
+                type="monotone"
+                dataKey="bbUpper"
+                stroke="#2C7A7B"
+                strokeWidth={1.5}
+                strokeDasharray="5 5"
+                dot={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="bbMiddle"
+                stroke="#2C7A7B"
+                strokeWidth={1.5}
+                dot={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="bbLower"
+                stroke="#2C7A7B"
+                strokeWidth={1.5}
+                strokeDasharray="5 5"
+                dot={false}
+              />
+            </>
+          )}
+
+          {/* Moving Averages */}
+          {showSMA20 && (
             <Line
               type="monotone"
-              dataKey="ma20"
+              dataKey="sma20"
               stroke="#F4C430"
               strokeWidth={2}
               strokeDasharray="5 5"
+              dot={false}
+            />
+          )}
+          {showSMA50 && (
+            <Line
+              type="monotone"
+              dataKey="sma50"
+              stroke="#E07A5F"
+              strokeWidth={2}
+              strokeDasharray="3 3"
+              dot={false}
+            />
+          )}
+          {showEMA && (
+            <Line
+              type="monotone"
+              dataKey="ema20"
+              stroke="#4F46E5"
+              strokeWidth={2}
               dot={false}
             />
           )}

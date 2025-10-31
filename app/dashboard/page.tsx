@@ -475,6 +475,18 @@ export default function Dashboard() {
                 />
               ))}
             </div>
+
+            {/* Raw Materials Section */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3">
+                <h2 className="text-3xl font-bold text-[#D4AF37]">Raw Materials & Indices</h2>
+                <span className="h-1 w-24 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
+              </div>
+              <p className="text-white/60 text-sm max-w-3xl">
+                Track key raw materials, synthetic fibers, and global cotton indices that influence market dynamics and pricing strategies.
+              </p>
+              <RawMaterialsGrid data={filteredData} />
+            </div>
           </motion.div>
         )}
 
