@@ -75,10 +75,12 @@ export default function CorrelationMatrix({ data }: CorrelationMatrixProps) {
         <table className="w-full border-collapse">
           <thead>
             <tr>
-              <th className="p-2"></th>
+              <th className="p-2 pb-24"></th>
               {markets.map((market, i) => (
-                <th key={i} className="p-2 text-xs text-white/70 font-medium transform -rotate-45 origin-bottom-left">
-                  <div className="w-20">{market.replace(' usc/lb', '')}</div>
+                <th key={i} className="p-2 pb-24 relative h-32">
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 transform -rotate-45 origin-center text-xs text-white/70 font-medium whitespace-nowrap w-24 text-left">
+                    {market.replace(' usc/lb', '')}
+                  </div>
                 </th>
               ))}
             </tr>

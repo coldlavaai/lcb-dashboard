@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, TrendingUp, TrendingDown, BarChart3, Info, Calendar, Activity } from 'lucide-react';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { ComparisonMode } from './ComparisonSelector';
+import { getComparisonDataPoint, calculatePercentageChange, formatComparisonLabel } from '../utils/comparisonUtils';
 
 interface DetailModalProps {
   isOpen: boolean;
@@ -13,6 +15,7 @@ interface DetailModalProps {
   data: any[];
   description?: string;
   color?: string;
+  comparisonMode?: ComparisonMode;
 }
 
 export default function DetailModal({
@@ -23,6 +26,7 @@ export default function DetailModal({
   data,
   description,
   color = '#D4AF37',
+  comparisonMode = 'latest',
 }: DetailModalProps) {
   const [chartType, setChartType] = useState<'area' | 'line'>('area');
 
@@ -47,9 +51,19 @@ export default function DetailModal({
     .map((d) => parseFloat(d[dataKey]));
 
   const latestValue = values[0] || 0;
-  const previousValue = values[1] || 0;
-  const change = previousValue !== 0 ? (((latestValue - previousValue) / previousValue) * 100) : 0;
+
+  // Get comparison data point based on mode
+  const { compareIndex, compareDate } = getComparisonDataPoint(data, 0, comparisonMode);
+  const previousValue = (compareIndex >= 0 && data[compareIndex])
+    ? parseFloat(data[compareIndex][dataKey]) || 0
+    : 0;
+
+  const change = calculatePercentageChange(latestValue, previousValue);
   const isPositive = change > 0;
+
+  // Get actual dates for comparison label
+  const latestDate = data[0]?.Date || null;
+  const comparisonLabel = formatComparisonLabel(latestDate, compareDate, comparisonMode);
 
   // Calculate stats
   const sortedValues = [...values].sort((a, b) => a - b);
@@ -64,8 +78,11 @@ export default function DetailModal({
     median: sortedValues[Math.floor(sortedValues.length / 2)]?.toFixed(2) || '0.00',
   };
 
-  // Percentile calculation
-  const percentile = ((sortedValues.indexOf(latestValue) / sortedValues.length) * 100).toFixed(0);
+  // Percentile calculation - count how many values are less than current value
+  const valuesLessThanCurrent = sortedValues.filter(v => v < latestValue).length;
+  const percentile = sortedValues.length > 0
+    ? ((valuesLessThanCurrent / sortedValues.length) * 100).toFixed(0)
+    : '0';
 
   const ChartComponent = chartType === 'area' ? AreaChart : LineChart;
 
@@ -124,7 +141,7 @@ export default function DetailModal({
                     <p className="text-white text-2xl font-bold">{stats.current}</p>
                   </div>
                   <div className="bg-[#0F1419]/50 rounded-xl p-4 border border-white/10">
-                    <p className="text-white/60 text-xs uppercase mb-1">24h Change</p>
+                    <p className="text-white/60 text-xs mb-1">Change: {comparisonLabel}</p>
                     <p className={`text-2xl font-bold flex items-center gap-2 ${
                       isPositive ? 'text-green-400' : 'text-red-400'
                     }`}>

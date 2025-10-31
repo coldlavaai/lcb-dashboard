@@ -4,33 +4,43 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import DetailModal from './DetailModal';
+import { ComparisonMode } from './ComparisonSelector';
+import { getComparisonDataPoint, calculatePercentageChange } from '../utils/comparisonUtils';
 
 interface HeatMapProps {
   data: any[];
   title: string;
+  comparisonMode?: ComparisonMode;
 }
 
-export default function HeatMap({ data, title }: HeatMapProps) {
+export default function HeatMap({ data, title, comparisonMode = 'latest' }: HeatMapProps) {
   const [selectedSpread, setSelectedSpread] = useState<string | null>(null);
-  const spreads = [
+
+  // Check if MCX data is available in latest record
+  const latestData = data[0] || {};
+  const hasMCXData = latestData['MCX'] != null && latestData['MCX usc/lb'] != null;
+
+  // Only show spreads where we have valid data
+  const allSpreads = [
     'CZCE - ICE',
     'AWP - ICE',
-    'MCX - ICE',
+    ...(hasMCXData ? ['MCX - ICE', 'CZCE - MCX'] : []), // Only show if MCX data exists
     'CZCE Cotton - PSF',
     'CEPEA-ICE',
-    'CZCE - MCX',
     'PSF-PTA',
     'ICE - PSF',
   ];
 
-  const latestData = data[0] || {};
-  const previousData = data[1] || {};
+  const spreads = allSpreads;
 
   const getChangePercentage = (spread: string) => {
     const current = parseFloat(latestData[spread]) || 0;
-    const previous = parseFloat(previousData[spread]) || 0;
-    if (previous === 0) return 0;
-    return ((current - previous) / previous) * 100;
+    const { compareIndex } = getComparisonDataPoint(data, 0, comparisonMode);
+
+    if (compareIndex === -1 || !data[compareIndex]) return 0;
+
+    const previous = parseFloat(data[compareIndex][spread]) || 0;
+    return calculatePercentageChange(current, previous);
   };
 
   const getHeatColor = (change: number) => {
@@ -121,6 +131,7 @@ export default function HeatMap({ data, title }: HeatMapProps) {
             selectedSpread === 'CZCE Cotton - PSF' ? '#E07A5F' :
             '#4F46E5'
           }
+          comparisonMode={comparisonMode}
         />
       )}
     </div>

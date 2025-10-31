@@ -89,6 +89,10 @@ export default function CustomDatePicker({
     return `${start} - ${end}`;
   };
 
+  const hasCustomRange = dateRange[0].startDate && dateRange[0].endDate &&
+    (dateRange[0].startDate.getTime() !== subMonths(maxDate, 1).getTime() ||
+     dateRange[0].endDate.getTime() !== maxDate.getTime());
+
   return (
     <div className="relative" ref={pickerRef}>
       {/* Trigger Button */}
@@ -97,16 +101,16 @@ export default function CustomDatePicker({
         className="px-4 py-2.5 bg-[#0F1419] border border-white/10 rounded-xl text-white text-sm font-semibold hover:bg-white/5 hover:border-[#D4AF37]/40 transition-all flex items-center gap-2"
       >
         <Calendar size={16} className="text-[#D4AF37]" />
-        <span className="hidden md:inline">Custom Range</span>
-        <span className="md:hidden">Range</span>
-      </button>
-
-      {/* Selected Range Display */}
-      {dateRange[0].startDate !== subMonths(maxDate, 1) && (
-        <div className="absolute top-full left-0 mt-1 px-2 py-1 bg-[#D4AF37]/20 border border-[#D4AF37]/40 rounded text-[#D4AF37] text-xs whitespace-nowrap">
-          {formatDisplayRange()}
+        <div className="flex flex-col items-start">
+          <span className="hidden md:inline">Custom Range</span>
+          <span className="md:hidden">Range</span>
+          {hasCustomRange && (
+            <span className="text-[10px] text-[#D4AF37] font-normal mt-0.5 whitespace-nowrap">
+              {formatDisplayRange()}
+            </span>
+          )}
         </div>
-      )}
+      </button>
 
       {/* Picker Modal */}
       {showPicker && (

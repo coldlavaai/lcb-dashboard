@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, AlertCircle, Activity } from 'lucide-react';
 import DetailModal from './DetailModal';
+import { ComparisonMode } from './ComparisonSelector';
+import { getComparisonDataPoint, calculatePercentageChange } from '../utils/comparisonUtils';
 
 interface TickerItem {
   id: string;
@@ -16,9 +18,10 @@ interface TickerItem {
 
 interface LiveTickerProps {
   data: any[];
+  comparisonMode?: ComparisonMode;
 }
 
-export default function LiveTicker({ data }: LiveTickerProps) {
+export default function LiveTicker({ data, comparisonMode = 'latest' }: LiveTickerProps) {
   const [isPaused, setIsPaused] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
@@ -27,7 +30,14 @@ export default function LiveTicker({ data }: LiveTickerProps) {
     if (!data || data.length < 2) return [];
 
     const latest = data[0];
-    const previous = data[1];
+    const { compareIndex } = getComparisonDataPoint(data, 0, comparisonMode);
+
+    if (compareIndex === -1 || !data[compareIndex]) return [];
+
+    const previous = data[compareIndex];
+
+    // Check if MCX source data is available
+    const hasMCXData = latest['MCX'] != null && latest['MCX usc/lb'] != null;
 
     const items: TickerItem[] = [];
 
@@ -35,7 +45,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
     if (latest['CZCE - ICE'] != null) {
       const current = parseFloat(latest['CZCE - ICE']);
       const prev = parseFloat(previous['CZCE - ICE']);
-      const change = prev !== 0 ? ((current - prev) / prev) * 100 : 0;
+      const change = calculatePercentageChange(current, prev);
       items.push({
         id: 'czce-ice',
         label: 'CZCE-ICE',
@@ -51,7 +61,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
     if (latest['AWP - ICE'] != null) {
       const current = parseFloat(latest['AWP - ICE']);
       const prev = parseFloat(previous['AWP - ICE']);
-      const change = prev !== 0 ? ((current - prev) / prev) * 100 : 0;
+      const change = calculatePercentageChange(current, prev);
       items.push({
         id: 'awp-ice',
         label: 'AWP-ICE',
@@ -62,11 +72,11 @@ export default function LiveTicker({ data }: LiveTickerProps) {
       });
     }
 
-    // MCX-ICE Spread (Priority #3)
-    if (latest['MCX - ICE'] != null) {
+    // MCX-ICE Spread (Priority #3) - Only show if MCX source data exists
+    if (hasMCXData && latest['MCX - ICE'] != null) {
       const current = parseFloat(latest['MCX - ICE']);
       const prev = parseFloat(previous['MCX - ICE']);
-      const change = prev !== 0 ? ((current - prev) / prev) * 100 : 0;
+      const change = calculatePercentageChange(current, prev);
       items.push({
         id: 'mcx-ice',
         label: 'MCX-ICE',
@@ -81,7 +91,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
     if (latest['ICE'] != null) {
       const current = parseFloat(latest['ICE']);
       const prev = parseFloat(previous['ICE']);
-      const change = prev ? ((current - prev) / prev) * 100 : 0;
+      const change = calculatePercentageChange(current, prev);
       items.push({
         id: 'ice-cotton',
         label: 'ICE Cotton',
@@ -120,7 +130,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
     if (latest['CZCE Cotton - PSF'] != null) {
       const current = parseFloat(latest['CZCE Cotton - PSF']);
       const prev = parseFloat(previous['CZCE Cotton - PSF']);
-      const change = prev !== 0 ? ((current - prev) / prev) * 100 : 0;
+      const change = calculatePercentageChange(current, prev);
       items.push({
         id: 'cotton-psf',
         label: 'Cotton-PSF',
@@ -252,6 +262,7 @@ export default function LiveTicker({ data }: LiveTickerProps) {
             selectedItem === 'ICE' ? '#4F46E5' :
             '#2C7A7B'
           }
+          comparisonMode={comparisonMode}
         />
       )}
     </div>

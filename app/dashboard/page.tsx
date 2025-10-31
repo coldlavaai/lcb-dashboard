@@ -14,6 +14,7 @@ import AdvancedChart from '../components/AdvancedChart';
 import CommentaryPanel from '../components/CommentaryPanel';
 import LiveTicker from '../components/LiveTicker';
 import CustomDatePicker from '../components/CustomDatePicker';
+import ComparisonSelector, { ComparisonMode } from '../components/ComparisonSelector';
 
 // Import data
 import cottonData from '../data/cotton_data.json';
@@ -31,15 +32,11 @@ export default function Dashboard() {
     end: null,
   });
   const [useCustomRange, setUseCustomRange] = useState(false);
+  const [comparisonMode, setComparisonMode] = useState<ComparisonMode>('latest');
 
   const getFilteredData = () => {
-    // Filter out October 30th (has null values)
-    const excludeOct30 = (item: any) => {
-      const itemDate = new Date(item.Date);
-      return !(itemDate.getMonth() === 9 && itemDate.getDate() === 30 && itemDate.getFullYear() === 2024);
-    };
-
-    const filteredCottonData = cottonData.filter(excludeOct30);
+    // No filtering needed - all data is valid
+    const filteredCottonData = cottonData;
 
     // Use custom date range if set
     if (useCustomRange && customDateRange.start && customDateRange.end) {
@@ -69,16 +66,18 @@ export default function Dashboard() {
 
   const filteredData = getFilteredData();
 
-  // Also filter the full dataset to exclude October 30th
-  const filteredFullData = cottonDataFull.filter((item: any) => {
-    const itemDate = new Date(item.Column_0 || item.Date);
-    return !(itemDate.getMonth() === 9 && itemDate.getDate() === 30 && itemDate.getFullYear() === 2024);
-  });
+  // No filtering needed for full dataset
+  const filteredFullData = cottonDataFull;
 
+  // Check if MCX data is available in latest record
+  const latestData = filteredData[0] || {};
+  const hasMCXData = latestData['MCX'] != null && latestData['MCX usc/lb'] != null;
+
+  // Only include MCX spread if data is available
   const spreads = [
     { id: 'CZCE - ICE', name: 'CZCE-ICE', description: 'China vs US Cotton Futures', color: '#D4AF37' },
     { id: 'AWP - ICE', name: 'AWP-ICE', description: 'Adjusted World Price vs US', color: '#F4C430' },
-    { id: 'MCX - ICE', name: 'MCX-ICE', description: 'India vs US Cotton', color: '#2C7A7B' },
+    ...(hasMCXData ? [{ id: 'MCX - ICE', name: 'MCX-ICE', description: 'India vs US Cotton', color: '#2C7A7B' }] : []),
     { id: 'CZCE Cotton - PSF', name: 'Cotton-PSF', description: 'Cotton vs Polyester', color: '#E07A5F' },
   ];
 
@@ -164,6 +163,9 @@ export default function Dashboard() {
               {/* Custom Date Picker */}
               <CustomDatePicker onRangeChange={handleCustomDateRange} />
 
+              {/* Comparison Selector */}
+              <ComparisonSelector value={comparisonMode} onChange={setComparisonMode} />
+
               {/* Action Buttons */}
               <motion.button
                 whileHover={{ scale: 1.05, y: -2 }}
@@ -195,7 +197,7 @@ export default function Dashboard() {
       </motion.header>
 
       {/* Live Ticker */}
-      <LiveTicker data={filteredData} />
+      <LiveTicker data={filteredData} comparisonMode={comparisonMode} />
 
       <main className="max-w-[2000px] mx-auto px-8 py-10">
         {/* Overview Mode */}
@@ -208,7 +210,7 @@ export default function Dashboard() {
           >
             {/* Row 1: Heat Map + Correlation Matrix */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-              <HeatMap data={filteredData} title="Spread Heat Map" />
+              <HeatMap data={filteredData} title="Spread Heat Map" comparisonMode={comparisonMode} />
               <CorrelationMatrix data={filteredData} />
             </div>
 
@@ -237,13 +239,15 @@ export default function Dashboard() {
                 description="Adjusted World Price vs US Futures"
                 color="#F4C430"
               />
-              <AdvancedChart
-                data={filteredData}
-                spread="MCX - ICE"
-                title="MCX-ICE"
-                description="India vs US Cotton Futures"
-                color="#2C7A7B"
-              />
+              {hasMCXData && (
+                <AdvancedChart
+                  data={filteredData}
+                  spread="MCX - ICE"
+                  title="MCX-ICE"
+                  description="India vs US Cotton Futures"
+                  color="#2C7A7B"
+                />
+              )}
             </div>
 
             {/* Row 4: Data Table */}
@@ -321,7 +325,7 @@ export default function Dashboard() {
             animate={{ opacity: 1 }}
             className="space-y-10"
           >
-            <HeatMap data={filteredData} title="Global Market Overview" />
+            <HeatMap data={filteredData} title="Global Market Overview" comparisonMode={comparisonMode} />
             <CorrelationMatrix data={filteredData} />
 
             {/* Market Charts Grid */}
