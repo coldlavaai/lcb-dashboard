@@ -128,14 +128,14 @@ export default function DetailModal({
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header - Always Visible (Sticky) */}
-              <div className="bg-gradient-to-r from-[#1A2332] to-[#2C3E50] border-b-2 border-[#D4AF37]/40 p-6 flex items-center justify-between flex-shrink-0">
+              <div className="bg-gradient-to-r from-[#1A2332] to-[#2C3E50] border-b-2 border-[#D4AF37]/40 p-4 md:p-6 flex items-center justify-between flex-shrink-0">
                 <div className="flex-1 min-w-0">
-                  <h2 className="text-2xl font-bold text-[#D4AF37] flex items-center gap-2">
-                    <Activity size={24} style={{ color }} />
+                  <h2 className="text-lg md:text-2xl font-bold text-[#D4AF37] flex items-center gap-2">
+                    <Activity size={20} className="md:w-6 md:h-6" style={{ color }} />
                     <span className="truncate">{title}</span>
                   </h2>
                   {description && (
-                    <p className="text-white/70 text-sm mt-1">{description}</p>
+                    <p className="text-white/70 text-xs md:text-sm mt-0.5 md:mt-1 line-clamp-1">{description}</p>
                   )}
                 </div>
                 <button
@@ -143,43 +143,43 @@ export default function DetailModal({
                     e.stopPropagation();
                     onClose();
                   }}
-                  className="flex-shrink-0 ml-4 p-3 bg-red-500/10 hover:bg-red-500/30 rounded-xl transition-all border-2 border-red-500/30 hover:border-red-500 group"
+                  className="flex-shrink-0 ml-2 md:ml-4 p-2 md:p-3 bg-red-500/10 hover:bg-red-500/30 rounded-xl transition-all border-2 border-red-500/30 hover:border-red-500 group"
                   title="Close (Esc)"
                 >
-                  <X size={24} className="text-red-400 group-hover:text-red-300 transition-colors" />
+                  <X size={20} className="md:w-6 md:h-6 text-red-400 group-hover:text-red-300 transition-colors" />
                 </button>
               </div>
 
               {/* Content - Scrollable */}
-              <div className="p-6 space-y-6 overflow-y-auto flex-1">
+              <div className="p-4 md:p-6 space-y-4 md:space-y-6 overflow-y-auto flex-1">
                 {/* Current Value & Change */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-[#0F1419]/50 rounded-xl p-4 border border-white/10">
-                    <p className="text-white/60 text-xs uppercase mb-1">Current Value</p>
-                    <p className="text-white text-2xl font-bold">{stats.current}</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                  <div className="bg-[#0F1419]/50 rounded-xl p-3 md:p-4 border border-white/10">
+                    <p className="text-white/60 text-[10px] md:text-xs uppercase mb-1">Current Value</p>
+                    <p className="text-white text-lg md:text-2xl font-bold">{stats.current}</p>
                   </div>
-                  <div className="bg-[#0F1419]/50 rounded-xl p-4 border border-white/10">
-                    <p className="text-white/60 text-xs mb-1">Change: {comparisonLabel}</p>
-                    <p className={`text-2xl font-bold flex items-center gap-2 ${
+                  <div className="bg-[#0F1419]/50 rounded-xl p-3 md:p-4 border border-white/10">
+                    <p className="text-white/60 text-[10px] md:text-xs mb-1 line-clamp-1">Change: {comparisonLabel}</p>
+                    <p className={`text-lg md:text-2xl font-bold flex items-center gap-1 md:gap-2 ${
                       isPositive ? 'text-green-400' : 'text-red-400'
                     }`}>
-                      {isPositive ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
+                      {isPositive ? <TrendingUp size={16} className="md:w-5 md:h-5" /> : <TrendingDown size={16} className="md:w-5 md:h-5" />}
                       {isPositive ? '+' : ''}{stats.change}{isSpread ? ' pts' : '%'}
                     </p>
                   </div>
-                  <div className="bg-[#0F1419]/50 rounded-xl p-4 border border-white/10">
-                    <p className="text-white/60 text-xs uppercase mb-1">90D High</p>
-                    <p className="text-white text-2xl font-bold">{stats.high}</p>
+                  <div className="bg-[#0F1419]/50 rounded-xl p-3 md:p-4 border border-white/10">
+                    <p className="text-white/60 text-[10px] md:text-xs uppercase mb-1">90D High</p>
+                    <p className="text-white text-lg md:text-2xl font-bold">{stats.high}</p>
                   </div>
-                  <div className="bg-[#0F1419]/50 rounded-xl p-4 border border-white/10">
-                    <p className="text-white/60 text-xs uppercase mb-1">90D Low</p>
-                    <p className="text-white text-2xl font-bold">{stats.low}</p>
+                  <div className="bg-[#0F1419]/50 rounded-xl p-3 md:p-4 border border-white/10">
+                    <p className="text-white/60 text-[10px] md:text-xs uppercase mb-1">90D Low</p>
+                    <p className="text-white text-lg md:text-2xl font-bold">{stats.low}</p>
                   </div>
                 </div>
 
                 {/* Chart Controls */}
-                <div className="flex items-center justify-between">
-                  <h3 className="text-white font-semibold text-lg">Historical Data (90 Days)</h3>
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="text-white font-semibold text-sm md:text-lg">Historical Data (90 Days)</h3>
                   <div className="flex bg-[#0F1419] rounded-lg p-1">
                     <button
                       onClick={() => setChartType('area')}
@@ -201,8 +201,8 @@ export default function DetailModal({
                 </div>
 
                 {/* Chart */}
-                <div className="bg-[#0F1419]/50 rounded-xl p-4 border border-white/10">
-                  <ResponsiveContainer width="100%" height={300}>
+                <div className="bg-[#0F1419]/50 rounded-xl p-3 md:p-4 border border-white/10 overflow-hidden">
+                  <ResponsiveContainer width="100%" height={250} className="md:h-[300px]">
                     <ChartComponent data={chartData}>
                       <defs>
                         <linearGradient id={`detail-gradient-${dataKey}`} x1="0" y1="0" x2="0" y2="1">
@@ -214,7 +214,10 @@ export default function DetailModal({
                       <XAxis
                         dataKey="Date"
                         stroke="#fff"
-                        tick={{ fill: '#fff', fontSize: 11 }}
+                        tick={{ fill: '#fff', fontSize: 10 }}
+                        interval="preserveStartEnd"
+                        minTickGap={25}
+                        height={40}
                         tickFormatter={(value) => {
                           const date = new Date(value);
                           return `${date.getMonth()+1}/${date.getDate()}`;
@@ -257,9 +260,9 @@ export default function DetailModal({
                 </div>
 
                 {/* Detailed Statistics */}
-                <div>
-                  <h3 className="text-white font-semibold text-lg mb-3">Statistical Analysis</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="mt-2">
+                  <h3 className="text-white font-semibold text-sm md:text-lg mb-3">Statistical Analysis</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
                     <div className="bg-[#0F1419]/50 rounded-lg p-3 border border-white/10">
                       <p className="text-white/60 text-xs mb-1">90-Day Average</p>
                       <p className="text-white font-bold">{stats.avg}</p>
