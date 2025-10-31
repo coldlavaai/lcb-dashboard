@@ -61,7 +61,7 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
         <span className="h-1 w-12 bg-gradient-to-r from-[#D4AF37] to-transparent rounded-full"></span>
         {title}
       </h3>
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative z-10">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6 relative z-10">
         {spreads.map((spread, index) => {
           const change = getChangeValue(spread);
           const value = parseFloat(latestData[spread]) || 0;
@@ -72,36 +72,38 @@ export default function HeatMap({ data, title, comparisonMode = 'latest' }: Heat
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.08, type: "spring", stiffness: 100 }}
-              whileHover={{ scale: 1.08, y: -5 }}
+              whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setSelectedSpread(spread)}
-              className="relative overflow-hidden rounded-2xl p-6 cursor-pointer group/card backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300"
+              className="relative overflow-hidden rounded-2xl p-8 cursor-pointer group/card backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300 min-h-[180px] flex flex-col justify-between"
               style={{
                 backgroundColor: getHeatColor(change),
                 border: `2px solid ${change > 0 ? theme.colors.data.profit : change < 0 ? theme.colors.data.loss : theme.colors.data.neutral}80`,
               }}
             >
-              <div className="relative z-10">
-                <p className="text-white/90 text-sm font-semibold mb-3 line-clamp-2 leading-tight">
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <p className="text-white/95 text-base font-bold mb-4 line-clamp-2 leading-snug tracking-wide">
                   {spread}
                 </p>
-                <p className="text-white text-3xl font-black mb-2 font-tabular">
-                  {value.toFixed(2)}
-                </p>
-                <div className="flex items-center gap-2 mt-2">
-                  {change > 0 ? (
-                    <TrendingUp size={16} style={{ color: theme.colors.data.profitLight }} />
-                  ) : change < 0 ? (
-                    <TrendingDown size={16} style={{ color: theme.colors.data.lossLight }} />
-                  ) : null}
-                  <span
-                    className="text-sm font-bold font-tabular"
-                    style={{
-                      color: change > 0 ? theme.colors.data.profitLight : change < 0 ? theme.colors.data.lossLight : theme.colors.data.neutral
-                    }}
-                  >
-                    {change > 0 ? '+' : ''}{change.toFixed(2)} pts
-                  </span>
+                <div>
+                  <p className="text-white text-4xl font-black mb-3 font-tabular tracking-tight">
+                    {value.toFixed(2)}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    {change > 0 ? (
+                      <TrendingUp size={18} style={{ color: theme.colors.data.profitLight }} />
+                    ) : change < 0 ? (
+                      <TrendingDown size={18} style={{ color: theme.colors.data.lossLight }} />
+                    ) : null}
+                    <span
+                      className="text-base font-bold font-tabular"
+                      style={{
+                        color: change > 0 ? theme.colors.data.profitLight : change < 0 ? theme.colors.data.lossLight : theme.colors.data.neutral
+                      }}
+                    >
+                      {change > 0 ? '+' : ''}{change.toFixed(2)} pts
+                    </span>
+                  </div>
                 </div>
               </div>
               {/* Shimmer hover effect */}
