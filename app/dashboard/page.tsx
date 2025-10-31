@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Download, Bell, Settings, ChevronDown, LayoutGrid } from 'lucide-react';
 
 // Import components
@@ -58,14 +59,16 @@ export default function Dashboard() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-4"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#F4C430] rounded-lg flex items-center justify-center shadow-lg">
-                <span className="text-2xl font-bold text-[#1A2332]">LC</span>
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-[#D4AF37] via-[#F4C430] to-[#D4AF37] bg-clip-text text-transparent" style={{fontFamily: 'Playfair Display, serif'}}>
-                  Liverpool Cotton Brokers
-                </h1>
-                <p className="text-white/50 text-sm">Professional Market Intelligence • 20 Years of Data</p>
+              <Image
+                src="/lcb-logo.png"
+                alt="Liverpool Cotton Brokers"
+                width={200}
+                height={50}
+                className="h-12 w-auto"
+                priority
+              />
+              <div className="border-l border-[#D4AF37]/30 pl-4">
+                <p className="text-white/70 text-sm">Professional Market Intelligence • 20 Years of Data</p>
               </div>
             </motion.div>
 

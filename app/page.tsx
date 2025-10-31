@@ -1,13 +1,21 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1A2332] via-[#2C3E50] to-[#34495E] flex items-center justify-center p-4">
       <div className="max-w-2xl w-full bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-12 text-center border border-[#D4AF37]/20">
+        <div className="mb-8 flex justify-center">
+          <Image
+            src="/lcb-logo.png"
+            alt="Liverpool Cotton Brokers"
+            width={400}
+            height={100}
+            className="h-20 w-auto mb-4"
+            priority
+          />
+        </div>
         <div className="mb-8">
-          <h1 className="text-5xl font-bold text-[#D4AF37] mb-2" style={{fontFamily: 'Playfair Display, serif'}}>
-            Liverpool Cotton Brokers
-          </h1>
           <p className="text-white/80 text-xl">Cotton Analysis Dashboard</p>
         </div>
 
