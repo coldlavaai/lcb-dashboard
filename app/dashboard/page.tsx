@@ -11,6 +11,7 @@ import CorrelationMatrix from '../components/CorrelationMatrix';
 import MarketDataTable from '../components/MarketDataTable';
 import AdvancedChart from '../components/AdvancedChart';
 import CommentaryPanel from '../components/CommentaryPanel';
+import LiveTicker from '../components/LiveTicker';
 
 // Import data
 import cottonData from '../data/cotton_data.json';
@@ -134,6 +135,9 @@ export default function Dashboard() {
           </div>
         </div>
       </motion.header>
+
+      {/* Live Ticker */}
+      <LiveTicker data={filteredData} />
 
       <main className="max-w-[2000px] mx-auto px-8 py-8">
         {/* Overview Mode */}
