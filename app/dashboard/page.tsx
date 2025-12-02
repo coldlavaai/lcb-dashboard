@@ -35,14 +35,16 @@ import {
   DEFAULT_LAYOUT,
 } from '../utils/layoutUtils';
 
-// Import data
-import cottonData from '../data/cotton_data.json';
-import cottonDataFull from '../data/cotton_data_full.json';
+// Import Supabase data fetcher
+import { getCottonData, CottonPriceData } from '../../lib/supabase';
 
 type TimeRange = '7d' | '30d' | '90d' | '1y' | 'all';
 type ViewMode = 'overview' | 'spreads' | 'markets' | 'data';
 
 export default function Dashboard() {
+  const [cottonData, setCottonData] = useState<any[]>([]);
+  const [cottonDataFull, setCottonDataFull] = useState<any[]>([]);
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [timeRange, setTimeRange] = useState<TimeRange>('30d');
   const [viewMode, setViewMode] = useState<ViewMode>('overview');
   const [selectedSpread, setSelectedSpread] = useState('CZCE - ICE');
@@ -73,6 +75,55 @@ export default function Dashboard() {
   // Update current time on mount
   useEffect(() => {
     setCurrentTime(new Date());
+  }, []);
+
+  // Fetch cotton data from Supabase
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setIsLoadingData(true);
+        const data = await getCottonData();
+
+        // Map Supabase fields to match expected JSON format
+        const transformedData = data.map(item => ({
+          Date: item.date,
+          MY: item.marketing_year,
+          'CNY exchange rate': item.cny_exchange_rate,
+          'CZCE cotton': item.czce_cotton,
+          'CZCE cotton usc/lb': item.czce_cotton_usc_lb,
+          'CZCE yarn': item.czce_yarn,
+          'CZCE yarn usc/lb': item.czce_yarn_usc_lb,
+          'CC INDEX': item.cc_index,
+          'CC INDEX usc/lb': item.cc_index_usc_lb,
+          'CZCE PSF': item.czce_psf,
+          'CZCE PSF usc/lb': item.czce_psf_usc_lb,
+          'CZCE PTA': item.czce_pta,
+          'CZCE PTA usc/lb': item.czce_pta_usc_lb,
+          'INR exchange rate': item.inr_exchange_rate,
+          MCX: item.mcx,
+          'MCX usc/lb': item.mcx_usc_lb,
+          ICE: item.ice,
+          'ICE Hi': item.ice_hi,
+          'ICE Lo': item.ice_lo,
+          'ICE spread': item.ice_spread,
+          Volume: item.volume,
+          'Open Interest': item.open_interest,
+          'A-Index': item.a_index,
+          AWP: item.awp,
+          Certificates: item.certificates,
+          EFP: item.efp,
+        })).sort((a, b) => new Date(b.Date).getTime() - new Date(a.Date).getTime()); // Most recent first
+
+        setCottonData(transformedData);
+        setCottonDataFull(transformedData);
+      } catch (error) {
+        console.error('Error fetching cotton data:', error);
+      } finally {
+        setIsLoadingData(false);
+      }
+    }
+
+    fetchData();
   }, []);
 
   // Get the latest data date (most recent date in the dataset)
